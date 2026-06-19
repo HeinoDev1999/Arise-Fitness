@@ -4,6 +4,24 @@ A personal, gamified fitness tracker themed after the "System" from *Solo Leveli
 Complete your **Daily Quest**, gain **EXP**, grow your **stats**, **level up**, and rank up
 from **E-rank to S-rank**. Miss a day and the System hands you a **penalty**.
 
+**▶ Live demo:** https://arise-user.vercel.app
+
+## Tech stack
+- **Vanilla JavaScript** (no framework, no build step), **HTML5**, **CSS3**
+- Client-side only — state persisted in the browser via **localStorage**
+- Installable **PWA** (web app manifest + icon)
+- Hosted on **Vercel** (auto-deploys on every push to `main`)
+
+## Highlights
+- Adaptive **daily quest generator** (location × focus × time) from a tagged exercise library
+- Optional **Gates** (bonus workouts) and **Rest Days** (no penalty, streak-safe)
+- **Penalty Quests** — a mandatory redemption workout after a failed daily
+- **Benchmark-derived stats** (STR/AGI/VIT/SEN) — real, best-of scoring from a customizable
+  test list incl. bodyweight-relative gym lifts; INT is a discipline score
+- Clickable **front/back body map** to target muscles for strength days
+- **Body-metrics** tracking (weight / body-fat / waist) with a trend sparkline
+- Code organized into focused modules under `js/`
+
 ## How to use it
 Just open **`index.html`** in any browser (double-click it). That's it — no install.
 
