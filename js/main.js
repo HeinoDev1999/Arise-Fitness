@@ -120,3 +120,8 @@ function init(){
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
+// Register the service worker for offline use (no-op on file:// or older browsers)
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=> navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
