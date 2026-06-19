@@ -1,0 +1,14 @@
+{
+  "name": "THE SYSTEM",
+  "short_name": "THE SYSTEM",
+  "description": "A Solo Leveling style gamified fitness tracker.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#05060a",
+  "theme_color": "#05060a",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

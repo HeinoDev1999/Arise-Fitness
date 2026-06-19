@@ -1,0 +1,25 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7fe2ff"/>
+      <stop offset="100%" stop-color="#1e90ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#0a0e17" stroke="#38bdf8" stroke-width="6"/>
+  <!-- corner accents like the in-app panels -->
+  <g stroke="#7fe2ff" stroke-width="8" fill="none" filter="url(#glow)">
+    <path d="M64 120 V64 H120"/>
+    <path d="M448 120 V64 H392"/>
+    <path d="M64 392 V448 H120"/>
+    <path d="M448 392 V448 H392"/>
+  </g>
+  <!-- rising double-chevron = level up -->
+  <g fill="none" stroke="url(#g)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M150 296 L256 196 L362 296"/>
+    <path d="M150 372 L256 272 L362 372"/>
+  </g>
+</svg>
