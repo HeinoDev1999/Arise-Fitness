@@ -106,6 +106,12 @@ function init(){
     if(!confirm("Reset ALL progress and start over? This cannot be undone.")) return;
     localStorage.removeItem(SAVE_KEY); location.reload();
   });
+
+  // settings
+  $("#settingsBtn").addEventListener("click", openSettings);
+  $("#saveNameBtn").addEventListener("click", renameHunter);
+  $("#exportBtn").addEventListener("click", exportData);
+  $("#importFile").addEventListener("change", e=>{ if(e.target.files[0]) importData(e.target.files[0]); e.target.value = ""; });
 }
 
 document.addEventListener("DOMContentLoaded", init);

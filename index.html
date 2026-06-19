@@ -54,6 +54,7 @@
         <div class="streak" id="streakDisplay" title="Daily streak">
           <span class="streak-flame">🔥</span><span id="streakCount">0</span>
         </div>
+        <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">⚙</button>
       </div>
     </header>
 
@@ -358,8 +359,38 @@
       </div>
     </section>
 
+    <!-- ===== SETTINGS TAB ===== -->
+    <section id="tab-settings" class="tab-panel">
+      <div class="panel">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="system-tag">[ SETTINGS ]</div>
+        <h2 class="setup-title">Settings</h2>
+
+        <div class="setup-group">
+          <div class="setup-label">HUNTER NAME</div>
+          <div class="settings-row">
+            <input id="setName" class="text-input small" maxlength="18" placeholder="Hunter name" />
+            <button id="saveNameBtn" class="mini-chip" type="button">Save</button>
+          </div>
+        </div>
+
+        <div class="setup-group" id="unitsGroup"><!-- units added with the units feature --></div>
+
+        <div class="setup-group">
+          <div class="setup-label">DATA &amp; BACKUP</div>
+          <p class="sys-caption">Your progress lives only in this browser. Export a backup file so you never lose it — and to move it to another device.</p>
+          <button id="exportBtn" class="btn btn-ghost btn-small" type="button" style="width:100%;margin-bottom:8px">⬇ Export backup</button>
+          <label class="btn btn-ghost btn-small import-label">⬆ Import backup
+            <input id="importFile" type="file" accept="application/json,.json" hidden />
+          </label>
+          <button id="resetAllBtn" class="link-btn" style="display:block;margin:14px auto 0">Reset all progress</button>
+        </div>
+      </div>
+    </section>
+
     <footer class="app-footer">
-      <button id="resetAllBtn" class="link-btn">Reset all progress</button>
+      <span class="footer-note">THE SYSTEM · your data stays on this device</span>
     </footer>
   </main>
 
@@ -371,6 +402,7 @@
   <script src="js/quests.js"></script>
   <script src="js/body.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/settings.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
