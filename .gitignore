@@ -1,0 +1,22 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs & scratch files
+*.log
+_test.js
+_c.js
+_combined.js
+
+# Dependencies / build (not used yet, here for the future)
+node_modules/
+dist/
+.env
+.env.*

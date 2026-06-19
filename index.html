@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#05060a" />
+  <title>THE SYSTEM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Notification stack -->
+  <div id="notifications" class="notifications"></div>
+
+  <!-- ========== ONBOARDING ========== -->
+  <section id="onboarding" class="screen onboarding hidden">
+    <div class="panel onboard-panel">
+      <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+      <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+      <div class="system-tag">[ SYSTEM ]</div>
+      <h1 class="onboard-title">YOU HAVE BEEN<br/>CHOSEN AS A PLAYER</h1>
+      <p class="onboard-sub">Enter your name, Hunter. The System will track your growth.</p>
+      <input id="hunterName" class="text-input" type="text" placeholder="Hunter name..." maxlength="18" />
+      <button id="startBtn" class="btn btn-primary">ACCEPT</button>
+      <p class="onboard-fine">By accepting, you agree to level up. Refusal results in... a penalty.</p>
+    </div>
+  </section>
+
+  <!-- ========== MAIN APP ========== -->
+  <main id="app" class="app hidden">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="rank-badge" id="rankBadge">E</span>
+        <div class="topbar-name">
+          <div class="hunter-name" id="hunterNameDisplay">Hunter</div>
+          <div class="hunter-title" id="hunterTitle">The Weakest</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="streak" id="streakDisplay" title="Daily streak">
+          <span class="streak-flame">🔥</span><span id="streakCount">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="status">STATUS</button>
+      <button class="tab" data-tab="quest">QUEST</button>
+      <button class="tab" data-tab="body">BODY</button>
+      <button class="tab" data-tab="history">LOG</button>
+    </nav>
+
+    <!-- ===== STATUS TAB ===== -->
+    <section id="tab-status" class="tab-panel active">
+
+      <!-- First-run guide -->
+      <div class="panel guide-card hidden" id="guideCard">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="system-tag">[ SYSTEM GUIDE ]</div>
+        <h2 class="setup-title">Welcome, Hunter</h2>
+        <p class="guide-intro">Three things power your growth:</p>
+        <ul class="guide-pillars">
+          <li><b>EXP &amp; Level</b> — earned by completing quests. Rewards showing up.</li>
+          <li><b>Stats</b> — your <i>real</i> ability, set by Benchmark Tests (not by showing up).</li>
+          <li><b>Body</b> — your actual weight &amp; measurements over time.</li>
+        </ul>
+        <div class="setup-label">GET STARTED</div>
+        <div class="guide-steps" id="guideSteps"></div>
+      </div>
+
+      <div class="panel status-panel">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="status-header">
+          <div class="system-tag">[ STATUS WINDOW ]</div>
+          <div class="level-block">
+            <div class="level-label">LEVEL</div>
+            <div class="level-number" id="levelNumber">1</div>
+          </div>
+        </div>
+
+        <div class="status-identity">
+          <div class="big-rank" id="bigRank">E</div>
+          <div class="identity-text">
+            <div class="identity-name" id="statusName">Hunter</div>
+            <div class="identity-class" id="statusClass">Awakened</div>
+          </div>
+        </div>
+
+        <!-- XP bar -->
+        <div class="bar-wrap">
+          <div class="bar-label"><span>EXP</span><span id="xpText">0 / 100</span></div>
+          <div class="bar"><div class="bar-fill xp" id="xpBar"></div></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <!-- Benchmark -->
+        <div class="bench-bar">
+          <span class="bench-last" id="benchLast"></span>
+          <button id="benchToggleBtn" class="btn btn-small">🧪 Benchmark Test</button>
+        </div>
+
+        <div class="bench-form hidden" id="benchForm">
+          <div class="setup-label">YOUR BENCHMARK — fill in what you tested, leave the rest blank</div>
+          <div class="bench-grid" id="benchFields"><!-- rendered dynamically --></div>
+
+          <div class="bench-add">
+            <select id="benchAddSelect" class="text-input small"></select>
+            <button id="benchAddBtn" class="mini-chip" type="button">+ Add</button>
+            <button id="benchCustomBtn" class="mini-chip" type="button">+ Custom test</button>
+          </div>
+
+          <div class="bench-custom hidden" id="benchCustomForm">
+            <div class="setup-label">CREATE A CUSTOM TEST</div>
+            <input id="ct_label" type="text" class="text-input small" placeholder="Test name (e.g. Chin-ups)" maxlength="28">
+            <div class="bench-grid">
+              <label>Stat it builds<select id="ct_stat" class="text-input small">
+                <option value="STR">STR · Strength</option>
+                <option value="AGI">AGI · Agility</option>
+                <option value="VIT">VIT · Vitality</option>
+                <option value="SEN">SEN · Sense</option>
+              </select></label>
+              <label>Unit<input id="ct_unit" type="text" class="text-input small" placeholder="reps / sec / km" maxlength="8"></label>
+            </div>
+            <label class="ct-target">A solid result = <input id="ct_t50" type="number" step="any" class="text-input small" placeholder="scores 50"></label>
+            <button id="ct_add" class="mini-chip" type="button">Add custom test</button>
+            <button id="ct_cancel" class="link-btn" type="button">cancel</button>
+          </div>
+
+          <p class="bench-note">Each stat takes the <b>best</b> of its tests — a weak movement won't drag it down. Gym lifts need a logged weight (Body tab) to be scored. INT is your discipline score — it rises automatically with your streak and quests cleared.</p>
+          <button id="benchSaveBtn" class="btn btn-primary">SAVE BENCHMARK</button>
+          <button id="benchCancelBtn" class="link-btn" style="display:block;margin:12px auto 0">Cancel</button>
+        </div>
+
+        <!-- Summary chips -->
+        <div class="chips">
+          <div class="chip"><div class="chip-num" id="totalQuests">0</div><div class="chip-lbl">QUESTS CLEARED</div></div>
+          <div class="chip"><div class="chip-num" id="bestStreak">0</div><div class="chip-lbl">BEST STREAK</div></div>
+          <div class="chip"><div class="chip-num" id="totalXp">0</div><div class="chip-lbl">TOTAL EXP</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== QUEST TAB ===== -->
+    <section id="tab-quest" class="tab-panel">
+
+      <!-- Quest setup (no active quest) -->
+      <div id="questSetup" class="panel">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="system-tag" id="setupTag">[ QUEST GENERATION ]</div>
+        <h2 class="setup-title" id="setupTitle">Prepare today's quest</h2>
+
+        <div class="setup-group">
+          <div class="setup-label">WHERE ARE YOU TRAINING?</div>
+          <div class="choice-row" id="locationChoices">
+            <button class="choice" data-location="home">🏠 Home</button>
+            <button class="choice" data-location="gym">🏋️ Gym</button>
+            <button class="choice" data-location="outdoor">🌳 Outdoor</button>
+          </div>
+        </div>
+
+        <div class="setup-group">
+          <div class="setup-label">WHAT'S TODAY'S FOCUS?</div>
+          <div class="choice-row choice-wrap" id="focusChoices">
+            <button class="choice" data-focus="full">🌐 Full Body<span class="choice-sub">balanced</span></button>
+            <button class="choice" data-focus="strength">💪 Strength<span class="choice-sub">muscle & power</span></button>
+            <button class="choice" data-focus="cardio">🔥 Cardio<span class="choice-sub">fat-burn</span></button>
+            <button class="choice" data-focus="mobility">🧘 Mobility<span class="choice-sub">flex & recover</span></button>
+          </div>
+        </div>
+
+        <div class="setup-group hidden" id="muscleGroup">
+          <div class="setup-label">TAP THE MUSCLES TO TRAIN</div>
+          <div class="muscle-presets" id="musclePresets">
+            <button class="mini-chip" data-preset="full">Full body</button>
+            <button class="mini-chip" data-preset="push">Push</button>
+            <button class="mini-chip" data-preset="pull">Pull</button>
+            <button class="mini-chip" data-preset="legs">Legs</button>
+            <button class="mini-chip" data-preset="core">Core</button>
+            <button class="mini-chip" data-preset="clear">Clear</button>
+          </div>
+
+          <div class="body-map" id="bodyMap">
+            <svg viewBox="0 0 300 252" xmlns="http://www.w3.org/2000/svg">
+              <!-- inert skeleton (drawn first, behind) -->
+              <g class="inert-layer">
+                <!-- FRONT -->
+                <circle class="binert" cx="80" cy="24" r="14"/>
+                <rect class="binert" x="73" y="36" width="14" height="9" rx="3"/>
+                <rect class="binert" x="40" y="86" width="11" height="30" rx="5"/>
+                <rect class="binert" x="109" y="86" width="11" height="30" rx="5"/>
+                <rect class="binert" x="64" y="112" width="32" height="12" rx="5"/>
+                <rect class="binert" x="62" y="174" width="15" height="42" rx="6"/>
+                <rect class="binert" x="83" y="174" width="15" height="42" rx="6"/>
+                <rect class="binert" x="60" y="218" width="17" height="8" rx="3"/>
+                <rect class="binert" x="83" y="218" width="17" height="8" rx="3"/>
+                <!-- BACK -->
+                <circle class="binert" cx="220" cy="24" r="14"/>
+                <rect class="binert" x="213" y="36" width="14" height="9" rx="3"/>
+                <rect class="binert" x="180" y="86" width="11" height="30" rx="5"/>
+                <rect class="binert" x="249" y="86" width="11" height="30" rx="5"/>
+                <rect class="binert" x="202" y="174" width="15" height="42" rx="6"/>
+                <rect class="binert" x="223" y="174" width="15" height="42" rx="6"/>
+                <rect class="binert" x="200" y="218" width="17" height="8" rx="3"/>
+                <rect class="binert" x="223" y="218" width="17" height="8" rx="3"/>
+              </g>
+              <!-- clickable muscle zones -->
+              <g class="muscle-layer">
+                <!-- FRONT -->
+                <ellipse class="mz" data-muscle="shoulders" cx="58"  cy="50" rx="13" ry="10"/>
+                <ellipse class="mz" data-muscle="shoulders" cx="102" cy="50" rx="13" ry="10"/>
+                <rect class="mz" data-muscle="chest"  x="62"  y="51" width="36" height="23" rx="7"/>
+                <rect class="mz" data-muscle="biceps" x="42"  y="56" width="13" height="30" rx="6"/>
+                <rect class="mz" data-muscle="biceps" x="105" y="56" width="13" height="30" rx="6"/>
+                <rect class="mz" data-muscle="core"   x="66"  y="76" width="28" height="34" rx="6"/>
+                <rect class="mz" data-muscle="quads"  x="61"  y="126" width="17" height="46" rx="7"/>
+                <rect class="mz" data-muscle="quads"  x="82"  y="126" width="17" height="46" rx="7"/>
+                <!-- BACK -->
+                <rect class="mz" data-muscle="back"       x="200" y="48"  width="40" height="50" rx="8"/>
+                <rect class="mz" data-muscle="triceps"    x="182" y="56"  width="13" height="30" rx="6"/>
+                <rect class="mz" data-muscle="triceps"    x="245" y="56"  width="13" height="30" rx="6"/>
+                <rect class="mz" data-muscle="glutes"     x="201" y="100" width="38" height="22" rx="8"/>
+                <rect class="mz" data-muscle="hamstrings" x="201" y="125" width="17" height="40" rx="7"/>
+                <rect class="mz" data-muscle="hamstrings" x="222" y="125" width="17" height="40" rx="7"/>
+                <rect class="mz" data-muscle="calves"     x="202" y="167" width="15" height="40" rx="6"/>
+                <rect class="mz" data-muscle="calves"     x="223" y="167" width="15" height="40" rx="6"/>
+              </g>
+              <text class="body-label" x="80"  y="246" text-anchor="middle">FRONT</text>
+              <text class="body-label" x="220" y="246" text-anchor="middle">BACK</text>
+            </svg>
+          </div>
+          <div class="muscle-summary" id="muscleSummary">Full body — all strength</div>
+        </div>
+
+        <div class="setup-group">
+          <div class="setup-label">HOW MUCH TIME TODAY?</div>
+          <div class="choice-row" id="modeChoices">
+            <button class="choice" data-mode="quick">⚡ Quick<span class="choice-sub">15-20 min</span></button>
+            <button class="choice" data-mode="standard">🔷 Standard<span class="choice-sub">30-45 min</span></button>
+            <button class="choice" data-mode="full">💠 Full<span class="choice-sub">60+ min</span></button>
+          </div>
+        </div>
+
+        <button id="generateBtn" class="btn btn-primary" disabled>GENERATE DAILY QUEST</button>
+        <button id="restDayBtn" class="btn btn-ghost btn-small" style="width:100%;margin-top:10px">🛌 Take a Rest Day</button>
+        <button id="setupCancelBtn" class="link-btn hidden" style="display:block;margin:12px auto 0">Cancel</button>
+      </div>
+
+      <!-- Rest day banner -->
+      <div id="questRest" class="panel hidden">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="system-tag">[ REST DAY ]</div>
+        <h2 class="setup-title">🛌 Resting today</h2>
+        <p class="rest-text">Recovery is part of the grind. No penalty today, and your streak stays alive. Stats and muscles grow while you rest, Hunter.</p>
+        <button id="trainAnywayBtn" class="btn btn-primary">Changed my mind — train anyway</button>
+      </div>
+
+      <!-- Active quest -->
+      <div id="questActive" class="panel hidden">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="quest-head">
+          <div>
+            <div class="system-tag">[ DAILY QUEST ]</div>
+            <h2 class="quest-title" id="questTitleText">Daily Training</h2>
+          </div>
+          <div class="quest-meta" id="questMeta"></div>
+        </div>
+
+        <div class="warning-box" id="questWarning">
+          <span class="warn-icon">⚠️</span>
+          <span>WARNING: Failing to complete the daily quest will result in an appropriate <b>penalty</b>.</span>
+        </div>
+
+        <div class="bar-wrap quest-progress">
+          <div class="bar-label"><span>PROGRESS</span><span id="questProgressText">0 / 0</span></div>
+          <div class="bar"><div class="bar-fill quest" id="questProgressBar"></div></div>
+        </div>
+
+        <ul class="task-list" id="taskList"></ul>
+
+        <div class="success-box hidden" id="questCleared">
+          <span class="ok-icon">✓</span>
+          <span id="questClearedText">Quest cleared! Want more? Enter a Gate for bonus EXP.</span>
+        </div>
+
+        <div class="quest-footer">
+          <div class="quest-reward">REWARD: <span id="questReward">+0 EXP</span></div>
+          <button id="resetQuestBtn" class="btn btn-ghost btn-small">Regenerate</button>
+          <button id="enterGateBtn" class="btn btn-small hidden">⚔️ Enter a Gate</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BODY TAB ===== -->
+    <section id="tab-body" class="tab-panel">
+      <div class="panel">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="system-tag">[ BODY METRICS ]</div>
+        <h2 class="setup-title">Track your real progress</h2>
+
+        <div class="body-summary" id="bodySummary"></div>
+        <div class="sparkline-wrap" id="sparklineWrap"></div>
+
+        <div class="body-form">
+          <div class="setup-label">LOG A NEW ENTRY</div>
+          <div class="body-inputs">
+            <label>Date<input id="bodyDate" type="date" class="text-input small" /></label>
+            <label>Weight (kg)<input id="bodyWeight" type="number" step="0.1" class="text-input small" placeholder="e.g. 80.5" /></label>
+          </div>
+          <div class="body-inputs">
+            <label>Body fat %<input id="bodyFat" type="number" step="0.1" class="text-input small" placeholder="optional" /></label>
+            <label>Waist (cm)<input id="bodyWaist" type="number" step="0.1" class="text-input small" placeholder="optional" /></label>
+          </div>
+          <input id="bodyNote" type="text" class="text-input" placeholder="Note (optional)" maxlength="60" />
+          <button id="bodyLogBtn" class="btn btn-primary">LOG ENTRY</button>
+        </div>
+
+        <div class="setup-label" style="margin-top:18px">HISTORY</div>
+        <ul class="body-list" id="bodyList"></ul>
+        <p class="empty-hint" id="bodyEmpty">No entries yet. Log your weight to start tracking real progress.</p>
+      </div>
+    </section>
+
+    <!-- ===== HISTORY TAB ===== -->
+    <section id="tab-history" class="tab-panel">
+      <div class="panel">
+        <div class="panel-corner tl"></div><div class="panel-corner tr"></div>
+        <div class="panel-corner bl"></div><div class="panel-corner br"></div>
+        <div class="system-tag">[ QUEST LOG ]</div>
+        <h2 class="setup-title">History</h2>
+        <ul class="history-list" id="historyList"></ul>
+        <p class="empty-hint" id="historyEmpty">No quests logged yet. Clear your first daily quest, Hunter.</p>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <button id="resetAllBtn" class="link-btn">Reset all progress</button>
+    </footer>
+  </main>
+
+  <!-- Loaded in order; plain scripts share globals (works over file://) -->
+  <script src="js/config.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/quests.js"></script>
+  <script src="js/body.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
