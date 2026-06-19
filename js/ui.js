@@ -68,8 +68,32 @@ function render(){
 
   renderQuest();
   renderBody();
+  renderCalendar();
   renderHistory();
   save();
+}
+
+/* ---------- Activity calendar (GitHub-squares heatmap, last 13 weeks) ---------- */
+function renderCalendar(){
+  const wrap = $("#activityCal"); if(!wrap) return;
+  // one status per day: trained > rest > missed
+  const status = {};
+  state.history.forEach(h=>{
+    if(h.kind === "rest"){ if(status[h.date] !== "trained") status[h.date] = "rest"; }
+    else if(h.completed){ status[h.date] = "trained"; }
+    else if(!status[h.date]) status[h.date] = "missed";
+  });
+  const end = new Date(todayStr() + "T00:00:00Z");
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - 90);
+  start.setUTCDate(start.getUTCDate() - start.getUTCDay()); // back up to Sunday
+  let html = "";
+  for(const d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)){
+    const ds = d.toISOString().slice(0,10);
+    const st = status[ds] || "none";
+    html += `<div class="cal-cell ${st}" title="${ds}${st !== "none" ? " · " + st : ""}"></div>`;
+  }
+  wrap.innerHTML = html;
 }
 
 /* ---------- Tab switching ---------- */
