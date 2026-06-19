@@ -29,25 +29,27 @@ function renderBody(){
   }
   empty.style.display = "none";
 
+  const u = wUnit();
   const latest = data[data.length-1];
   const first = data[0];
   const prev = data.length > 1 ? data[data.length-2] : null;
-  const sinceStart = latest.weight - first.weight;
-  const sinceLast = prev ? latest.weight - prev.weight : 0;
+  const sinceStart = kgToDisp(latest.weight - first.weight);
+  const sinceLast = prev ? kgToDisp(latest.weight - prev.weight) : 0;
+  const lbl = $("#wUnitLbl"); if(lbl) lbl.textContent = u;
 
   summary.innerHTML = `
     <div class="body-current">
       <div class="bc-label">CURRENT WEIGHT</div>
-      <div class="bc-value">${latest.weight.toFixed(1)} <span>kg</span></div>
+      <div class="bc-value">${round1(kgToDisp(latest.weight)).toFixed(1)} <span>${u}</span></div>
     </div>
     <div class="body-deltas">
-      <div class="bd-row"><span>Since last</span> ${fmtDelta(sinceLast,"kg",true)}</div>
-      <div class="bd-row"><span>Since start</span> ${fmtDelta(sinceStart,"kg",true)}</div>
+      <div class="bd-row"><span>Since last</span> ${fmtDelta(sinceLast,u,true)}</div>
+      <div class="bd-row"><span>Since start</span> ${fmtDelta(sinceStart,u,true)}</div>
       ${latest.bodyfat!=null ? `<div class="bd-row"><span>Body fat</span> <b>${latest.bodyfat}%</b></div>`:""}
       ${latest.waist!=null ? `<div class="bd-row"><span>Waist</span> <b>${latest.waist} cm</b></div>`:""}
     </div>`;
 
-  sparkWrap.innerHTML = sparkline(data.map(d=>d.weight));
+  sparkWrap.innerHTML = sparkline(data.map(d=>round1(kgToDisp(d.weight))));
 
   list.innerHTML = "";
   [...data].reverse().forEach((e)=>{
@@ -60,7 +62,7 @@ function renderBody(){
     ].filter(Boolean).join(" · ");
     li.innerHTML = `
       <div class="bi-left">
-        <span class="bi-weight">${e.weight.toFixed(1)} kg</span>
+        <span class="bi-weight">${round1(kgToDisp(e.weight)).toFixed(1)} ${u}</span>
         <span class="bi-date">${e.date}${extra ? " · "+extra : ""}</span>
       </div>
       <button class="bi-del" data-date="${e.date}" title="Delete">✕</button>`;
@@ -97,8 +99,9 @@ function sparkline(values){
 
 function logBody(){
   const date = $("#bodyDate").value || todayStr();
-  const weight = parseFloat($("#bodyWeight").value);
-  if(isNaN(weight) || weight <= 0){ queueNotif("danger","[ SYSTEM ]","Enter a valid weight first.",2600); return; }
+  const entered = parseFloat($("#bodyWeight").value);
+  if(isNaN(entered) || entered <= 0){ queueNotif("danger","[ SYSTEM ]","Enter a valid weight first.",2600); return; }
+  const weight = Math.round(dispToKg(entered) * 100) / 100; // store canonical kg
   const bodyfat = $("#bodyFat").value !== "" ? parseFloat($("#bodyFat").value) : null;
   const waist = $("#bodyWaist").value !== "" ? parseFloat($("#bodyWaist").value) : null;
   const note = $("#bodyNote").value.trim() || null;
@@ -110,5 +113,5 @@ function logBody(){
   $("#bodyWeight").value = ""; $("#bodyFat").value = ""; $("#bodyWaist").value = ""; $("#bodyNote").value = "";
   $("#bodyDate").value = todayStr();
   save(); render();
-  queueNotif("ok","[ LOGGED ]",`Weight ${weight.toFixed(1)} kg saved for ${date}.`,2600);
+  queueNotif("ok","[ LOGGED ]",`Weight ${entered.toFixed(1)} ${wUnit()} saved for ${date}.`,2600);
 }

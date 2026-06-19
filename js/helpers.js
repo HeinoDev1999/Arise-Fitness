@@ -11,6 +11,16 @@ function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
 function cap(s){ return s ? s[0].toUpperCase()+s.slice(1) : s; }
 function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+function round1(n){ return Math.round(n*10)/10; }
+
+/* ---------- Units (values stored canonical: kg, km; converted for display) ---------- */
+const LB_PER_KG = 2.2046226218, MI_PER_KM = 0.6213711922;
+function wUnit(){ return (state && state.units && state.units.weight) || "kg"; }
+function dUnit(){ return (state && state.units && state.units.distance) || "km"; }
+function kgToDisp(kg){ return wUnit()==="lb" ? kg*LB_PER_KG : kg; }
+function dispToKg(v){ return wUnit()==="lb" ? v/LB_PER_KG : v; }
+function kmToDisp(km){ return dUnit()==="mi" ? km*MI_PER_KM : km; }
+function dispToKm(v){ return dUnit()==="mi" ? v/MI_PER_KM : v; }
 
 /* ---------- Benchmark scoring math ---------- */
 function score(value, t50){ return value==null ? null : Math.round(Math.min(130, (value / t50) * 50)); }

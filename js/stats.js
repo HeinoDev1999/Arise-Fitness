@@ -86,7 +86,14 @@ function renderBenchForm(){
     wrap.innerHTML = `<p class="bench-empty">Your benchmark is empty. Add the tests you actually do from the dropdown below, or create a custom one — your stats are built from whatever you pick.</p>`;
   } else {
     tests.forEach(def=>{
-      const val = state.benchmarks[def.id] != null ? state.benchmarks[def.id] : "";
+      const stored = state.benchmarks[def.id];
+      const dispUnit = def.unit === "kg" ? wUnit() : def.unit === "km" ? dUnit() : def.unit;
+      let val = "";
+      if(stored != null){
+        val = def.unit === "kg" ? round1(kgToDisp(stored))
+            : def.unit === "km" ? round1(kmToDisp(stored))
+            : stored;
+      }
       const extra = def.type === "lift" ? " · vs bodyweight"
                   : def.type === "time" ? " · faster = better"
                   : def.custom          ? " · custom" : "";
@@ -96,7 +103,7 @@ function renderBenchForm(){
         <span class="bf-top">${def.label}
           <button class="bf-del" data-del="${def.id}" title="Remove from list" type="button">✕</button>
         </span>
-        <span class="bf-sub">${def.unit} · ${def.stat}${extra}</span>
+        <span class="bf-sub">${dispUnit} · ${def.stat}${extra}</span>
         <input id="bm_${def.id}" type="number" step="any" class="text-input small" value="${val}" placeholder="—">`;
       wrap.appendChild(label);
     });
@@ -173,7 +180,14 @@ function saveBenchmark(){
   activeTests().forEach(def=>{
     const el = $("#bm_"+def.id); if(!el) return;
     const raw = el.value;
-    if(raw !== ""){ const num = parseFloat(raw); if(!isNaN(num)){ merged[def.id] = num; any = true; } }
+    if(raw !== ""){
+      let num = parseFloat(raw);
+      if(!isNaN(num)){
+        if(def.unit === "kg") num = dispToKg(num);       // store canonical kg
+        else if(def.unit === "km") num = dispToKm(num);  // store canonical km
+        merged[def.id] = num; any = true;
+      }
+    }
   });
   if(!any){ queueNotif("danger","[ SYSTEM ]","Enter at least one benchmark value.",2600); return; }
   merged.date = todayStr();

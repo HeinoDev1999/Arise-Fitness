@@ -22,6 +22,7 @@ function defaultState(name){
     benchActive: DEFAULT_BENCH.slice(), // which tests appear in your benchmark list
     customTests: [],   // user-created test defs {id,label,unit,stat,type:"value",t50,custom:true}
     statHistory: [],   // [{date, STR, AGI, VIT, SEN, INT}] snapshot per benchmark save (for trends)
+    units: { weight:"kg", distance:"km" }, // display units (values are stored canonical: kg, km)
     history:[],
   };
 }
@@ -38,6 +39,7 @@ function migrate(s){
   if(s.penalty === undefined) s.penalty = null;
   if(!Array.isArray(s.customTests)) s.customTests = [];
   if(!Array.isArray(s.statHistory)) s.statHistory = [];
+  if(!s.units || typeof s.units !== "object") s.units = { weight:"kg", distance:"km" };
   if(!Array.isArray(s.benchActive)){
     // start from defaults, then keep any catalog tests they've already logged
     s.benchActive = DEFAULT_BENCH.slice();

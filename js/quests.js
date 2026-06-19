@@ -6,8 +6,9 @@
 function buildTarget(ex, mult){
   if(ex.unit === "flag") return "✓ today";
   if(ex.unit === "sets") return `${ex.base} × ${ex.reps}`;
+  if(ex.unit === "km"){ return `${round1(kmToDisp(Math.max(0.1, ex.base * mult)))} ${dUnit()}`; }
   const v = Math.max(1, Math.round(ex.base * mult));
-  const unitText = { reps:"reps", sec:"sec", min:"min", km:"km", x:"rounds" }[ex.unit] || ex.unit;
+  const unitText = { reps:"reps", sec:"sec", min:"min", x:"rounds" }[ex.unit] || ex.unit;
   return `${v} ${unitText}`;
 }
 

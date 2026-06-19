@@ -112,6 +112,11 @@ function init(){
   $("#saveNameBtn").addEventListener("click", renameHunter);
   $("#exportBtn").addEventListener("click", exportData);
   $("#importFile").addEventListener("change", e=>{ if(e.target.files[0]) importData(e.target.files[0]); e.target.value = ""; });
+  $("#unitsGroup").addEventListener("click",e=>{
+    const w = e.target.closest("[data-uw]"), d = e.target.closest("[data-ud]");
+    if(w){ state.units.weight = w.dataset.uw; save(); renderUnits(); render(); }
+    else if(d){ state.units.distance = d.dataset.ud; save(); renderUnits(); render(); }
+  });
 }
 
 document.addEventListener("DOMContentLoaded", init);

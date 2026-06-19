@@ -8,6 +8,22 @@ function openSettings(){
   switchTab("settings");
 }
 
+function renderUnits(){
+  const g = $("#unitsGroup"); if(!g) return;
+  g.innerHTML = `
+    <div class="setup-label">UNITS</div>
+    <div class="units-row"><span>Weight</span>
+      <div class="seg" id="segWeight">
+        <button class="seg-btn${wUnit()==='kg'?' on':''}" data-uw="kg" type="button">kg</button>
+        <button class="seg-btn${wUnit()==='lb'?' on':''}" data-uw="lb" type="button">lb</button>
+      </div></div>
+    <div class="units-row"><span>Distance</span>
+      <div class="seg" id="segDist">
+        <button class="seg-btn${dUnit()==='km'?' on':''}" data-ud="km" type="button">km</button>
+        <button class="seg-btn${dUnit()==='mi'?' on':''}" data-ud="mi" type="button">mi</button>
+      </div></div>`;
+}
+
 function renameHunter(){
   const v = ($("#setName").value || "").trim().slice(0,18);
   if(!v){ queueNotif("danger","[ SYSTEM ]","Enter a name first.",2400); return; }
