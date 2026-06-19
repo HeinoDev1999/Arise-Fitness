@@ -34,16 +34,32 @@ function render(){
   $("#totalXp").textContent = state.totalXp;
 
   const computed = computeStats(state.benchmarks);
+  const hist = state.statHistory || [];
+  const prevSnap = hist.length >= 2 ? hist[hist.length - 2] : null;
   const grid = $("#statsGrid"); grid.innerHTML = "";
   for(const key of Object.keys(STATS)){
     const v = computed[key];
     const shown = v==null ? "—" : v;
     const width = v==null ? 0 : Math.min(100, v);
+
+    // progress delta since the previous benchmark (measured stats only — INT is auto)
+    let deltaHtml = "";
+    if(key !== "INT" && v != null && prevSnap && prevSnap[key] != null){
+      const d = v - prevSnap[key];
+      if(d > 0)      deltaHtml = `<span class="stat-delta up">▲ ${d}</span>`;
+      else if(d < 0) deltaHtml = `<span class="stat-delta down">▼ ${Math.abs(d)}</span>`;
+    }
+
+    const tier = tierFor(v);
+    const meta = v == null ? `Untested · ${STATS[key].desc}`
+              : key === "INT" ? `${tier} · discipline (auto)`
+              : `${tier} · ${STATS[key].desc}`;
+
     const div = document.createElement("div");
     div.className = `stat s-${key}` + (v==null ? " untested":"");
     div.innerHTML = `
-      <div class="stat-top"><span class="stat-name">${STATS[key].full}</span><span class="stat-val">${shown}</span></div>
-      <div class="stat-desc">${v==null ? "Run a benchmark to reveal" : STATS[key].desc}</div>
+      <div class="stat-top"><span class="stat-name">${STATS[key].full}</span><span class="stat-val">${shown}${deltaHtml}</span></div>
+      <div class="stat-desc">${meta}</div>
       <div class="stat-mini-bar"><div class="stat-mini-fill" style="width:${width}%"></div></div>`;
     grid.appendChild(div);
   }

@@ -9,6 +9,13 @@ function disciplineScore(){
   return Math.round(clamp(10 + state.bestStreak*4 + Math.min(state.totalQuests,40)*1.2, 0, 130));
 }
 
+// Turn a 0–130 score into a readable tier ("Intermediate", etc.)
+function tierFor(scoreVal){
+  if(scoreVal == null) return "Untested";
+  for(const t of STAT_TIERS){ if(scoreVal >= t.min) return t.label; }
+  return "Novice";
+}
+
 // Latest logged bodyweight (gym lifts are scored relative to it)
 function currentBodyweight(){
   if(!state.body || !state.body.length) return null;
@@ -52,11 +59,21 @@ function computeStats(bench){
 
 /* ---------- Benchmark form ---------- */
 function renderBench(){
-  const last = state.benchmarks && state.benchmarks.date;
   const el = $("#benchLast"); if(!el) return;
-  el.textContent = last
-    ? `Last benchmark: ${last}`
-    : "Stats are untested — run a benchmark to reveal your real ability.";
+  const last = state.benchmarks && state.benchmarks.date;
+  if(!last){
+    el.textContent = "Stats are untested — run a benchmark to reveal your real ability.";
+    el.classList.remove("retest");
+    return;
+  }
+  const days = daysBetween(last, todayStr());
+  if(days >= 21 && (state.benchActive || []).length){
+    el.textContent = `Last benchmark: ${last} · ${days} days ago — time to re-test?`;
+    el.classList.add("retest");
+  } else {
+    el.textContent = `Last benchmark: ${last}`;
+    el.classList.remove("retest");
+  }
 }
 
 // Build the editable list of test inputs + the "add from catalog" dropdown
@@ -164,6 +181,9 @@ function saveBenchmark(){
   state.benchmarks = merged;
 
   const before = computeStats(prev), after = computeStats(merged);
+  // record a dated snapshot for the progress trend (one per day; overwrite same day)
+  state.statHistory = (state.statHistory || []).filter(h => h.date !== merged.date);
+  state.statHistory.push({ date: merged.date, STR:after.STR, AGI:after.AGI, VIT:after.VIT, SEN:after.SEN, INT:after.INT });
   save(); render(); closeBenchForm();
   queueNotif("ok","[ BENCHMARK LOGGED ]","Stats recalculated from your real numbers.",3200);
   Object.keys(STATS).forEach(k=>{

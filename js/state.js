@@ -21,6 +21,7 @@ function defaultState(name){
     benchmarksPrev:{}, // previous snapshot (for "since last test" deltas)
     benchActive: DEFAULT_BENCH.slice(), // which tests appear in your benchmark list
     customTests: [],   // user-created test defs {id,label,unit,stat,type:"value",t50,custom:true}
+    statHistory: [],   // [{date, STR, AGI, VIT, SEN, INT}] snapshot per benchmark save (for trends)
     history:[],
   };
 }
@@ -36,6 +37,7 @@ function migrate(s){
   if(s.lastChoices === undefined) s.lastChoices = null;
   if(s.penalty === undefined) s.penalty = null;
   if(!Array.isArray(s.customTests)) s.customTests = [];
+  if(!Array.isArray(s.statHistory)) s.statHistory = [];
   if(!Array.isArray(s.benchActive)){
     // start from defaults, then keep any catalog tests they've already logged
     s.benchActive = DEFAULT_BENCH.slice();

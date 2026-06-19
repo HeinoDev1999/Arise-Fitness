@@ -16,6 +16,17 @@ const STATS = {
 };
 const STAT_COLOR = { STR:"#ff7a7a", AGI:"#7affb0", VIT:"#ffd76a", SEN:"#b69cff", INT:"#7fe2ff" };
 
+/* ---------- Stat tiers (make a 0–130 score mean something) ----------
+   A benchmark's "solid" value scores 50 = Intermediate; double ~100. ---------- */
+const STAT_TIERS = [
+  { min:110, label:"World-class" },
+  { min:85,  label:"Elite" },
+  { min:70,  label:"Advanced" },
+  { min:50,  label:"Intermediate" },
+  { min:30,  label:"Beginner" },
+  { min:1,   label:"Novice" },
+];
+
 /* ---------- Ranks (by level) ---------- */
 const RANKS = [
   { rank: "E", min: 1 }, { rank: "D", min: 6 }, { rank: "C", min: 11 },
