@@ -182,6 +182,7 @@ body{
 .bench-custom{margin:10px 0;padding:12px;border:1px solid var(--accent);border-radius:6px;background:rgba(56,189,248,.05)}
 .ct-target{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);margin:8px 0;font-family:'Orbitron';letter-spacing:1px}
 .ct-target input{max-width:130px}
+.bench-empty{grid-column:1 / -1;color:var(--text-dim);font-size:14px;line-height:1.5;text-align:center;padding:14px 8px;border:1px dashed var(--panel-border);border-radius:6px}
 
 /* Chips */
 .chips{display:flex;gap:10px;margin-top:14px}

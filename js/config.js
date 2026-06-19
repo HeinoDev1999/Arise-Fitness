@@ -335,23 +335,43 @@ const MUSCLE_PRESETS = {
      type "offset" -> mid + value*slope (used by toe reach; can be negative)
    Stats take the BEST of whatever you've logged for that stat. ---------- */
 const BENCHMARK_CATALOG = [
-  { id:"pushups",   label:"Max Push-ups",      unit:"reps", stat:"STR", type:"value", t50:40 },
-  { id:"squats",    label:"Max Squats",        unit:"reps", stat:"STR", type:"value", t50:55 },
-  { id:"pullups",   label:"Max Pull-ups",      unit:"reps", stat:"STR", type:"value", t50:10 },
-  { id:"dips",      label:"Max Dips",          unit:"reps", stat:"STR", type:"value", t50:20 },
-  { id:"situps60",  label:"Sit-ups in 60s",    unit:"reps", stat:"STR", type:"value", t50:35 },
-  { id:"deadlift",  label:"Deadlift 1RM",      unit:"kg",   stat:"STR", type:"lift",  ratio50:1.25 },
-  { id:"backsquat", label:"Back Squat 1RM",    unit:"kg",   stat:"STR", type:"lift",  ratio50:1.0  },
-  { id:"benchpress",label:"Bench Press 1RM",   unit:"kg",   stat:"STR", type:"lift",  ratio50:0.75 },
-  { id:"ohpress",   label:"Overhead Press 1RM",unit:"kg",   stat:"STR", type:"lift",  ratio50:0.45 },
-  { id:"burpees60", label:"Burpees in 60s",    unit:"reps", stat:"AGI", type:"value", t50:20 },
-  { id:"broadjump", label:"Broad Jump",        unit:"cm",   stat:"AGI", type:"value", t50:200 },
-  { id:"plank",     label:"Max Plank Hold",    unit:"sec",  stat:"VIT", type:"value", t50:90 },
-  { id:"wallsit",   label:"Max Wall Sit",      unit:"sec",  stat:"VIT", type:"value", t50:90 },
-  { id:"run",       label:"Longest Run",       unit:"km",   stat:"VIT", type:"value", t50:5  },
-  { id:"deepsquat", label:"Deep Squat Hold",   unit:"sec",  stat:"SEN", type:"value", t50:60 },
-  { id:"toereach",  label:"Toe Reach",         unit:"cm",   stat:"SEN", type:"offset", mid:50, slope:2.5 },
+  /* ---- STRENGTH ---- */
+  { id:"pushups",   label:"Max Push-ups",        unit:"reps", stat:"STR", type:"value", t50:40 },
+  { id:"pullups",   label:"Max Pull-ups",        unit:"reps", stat:"STR", type:"value", t50:10 },
+  { id:"chinups",   label:"Max Chin-ups",        unit:"reps", stat:"STR", type:"value", t50:12 },
+  { id:"dips",      label:"Max Dips",            unit:"reps", stat:"STR", type:"value", t50:20 },
+  { id:"squats",    label:"Max Bodyweight Squats",unit:"reps",stat:"STR", type:"value", t50:55 },
+  { id:"pistols",   label:"Pistol Squats / leg", unit:"reps", stat:"STR", type:"value", t50:5  },
+  { id:"situps60",  label:"Sit-ups in 60s",      unit:"reps", stat:"STR", type:"value", t50:35 },
+  { id:"deadhang",  label:"Dead Hang (grip)",    unit:"sec",  stat:"STR", type:"value", t50:60 },
+  { id:"deadlift",  label:"Deadlift 1RM",        unit:"kg",   stat:"STR", type:"lift",  ratio50:1.25 },
+  { id:"backsquat", label:"Back Squat 1RM",      unit:"kg",   stat:"STR", type:"lift",  ratio50:1.0  },
+  { id:"benchpress",label:"Bench Press 1RM",     unit:"kg",   stat:"STR", type:"lift",  ratio50:0.75 },
+  { id:"ohpress",   label:"Overhead Press 1RM",  unit:"kg",   stat:"STR", type:"lift",  ratio50:0.45 },
+  { id:"bbrow",     label:"Barbell Row 1RM",     unit:"kg",   stat:"STR", type:"lift",  ratio50:0.75 },
+
+  /* ---- AGILITY (speed & explosiveness) ---- */
+  { id:"burpees60", label:"Burpees in 60s",      unit:"reps", stat:"AGI", type:"value", t50:20 },
+  { id:"vertjump",  label:"Vertical Jump",       unit:"cm",   stat:"AGI", type:"value", t50:45 },
+  { id:"broadjump", label:"Standing Broad Jump", unit:"cm",   stat:"AGI", type:"value", t50:200 },
+  { id:"jumprope",  label:"Jump Rope (max unbroken)",unit:"reps",stat:"AGI", type:"value", t50:100 },
+  { id:"mtclimb60", label:"Mountain Climbers in 60s",unit:"reps",stat:"AGI",type:"value", t50:60 },
+  { id:"sprint40",  label:"40m Sprint",          unit:"sec",  stat:"AGI", type:"time",  t50:6.0 },
+
+  /* ---- VITALITY (endurance & conditioning) ---- */
+  { id:"plank",     label:"Max Plank Hold",      unit:"sec",  stat:"VIT", type:"value", t50:90 },
+  { id:"wallsit",   label:"Max Wall Sit",        unit:"sec",  stat:"VIT", type:"value", t50:90 },
+  { id:"run",       label:"Longest Run (nonstop)",unit:"km",  stat:"VIT", type:"value", t50:5  },
+  { id:"cooper",    label:"12-min Run (Cooper)", unit:"km",   stat:"VIT", type:"value", t50:2.4 },
+  { id:"mile",      label:"1-mile Run time",     unit:"min",  stat:"VIT", type:"time",  t50:8.0 },
+  { id:"run5k",     label:"5 km Run time",       unit:"min",  stat:"VIT", type:"time",  t50:28 },
+  { id:"row2k",     label:"2 km Row time",       unit:"min",  stat:"VIT", type:"time",  t50:8.5 },
+
+  /* ---- SENSE (mobility & recovery) ---- */
+  { id:"deepsquat", label:"Deep Squat Hold",     unit:"sec",  stat:"SEN", type:"value", t50:60 },
+  { id:"toereach",  label:"Toe Reach (sit & reach)",unit:"cm",stat:"SEN", type:"offset", mid:50, slope:2.5 },
+  { id:"balance",   label:"Single-leg Balance (eyes shut)",unit:"sec",stat:"SEN",type:"value", t50:30 },
 ];
 const CATALOG_BY_ID = Object.fromEntries(BENCHMARK_CATALOG.map(t => [t.id, t]));
-// Tests a new hunter starts with (the rest are in the catalog to add)
-const DEFAULT_BENCH = ["pushups","squats","burpees60","plank","run","deepsquat","toereach"];
+// New hunters start with a BLANK benchmark — they pick their own tests from the catalog.
+const DEFAULT_BENCH = [];

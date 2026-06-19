@@ -28,7 +28,8 @@ function scoreTest(def, value){
   if(def == null || value == null) return null;
   if(def.type === "lift")   return scoreLift(value, def.ratio50);
   if(def.type === "offset") return Math.round(clamp(def.mid + value * def.slope, 0, 120));
-  return score(value, def.t50); // "value"
+  if(def.type === "time")   return value > 0 ? Math.round(Math.min(130, (def.t50 / value) * 50)) : null; // faster = better
+  return score(value, def.t50); // "value" (higher = better)
 }
 
 function computeStats(bench){
@@ -61,31 +62,50 @@ function renderBench(){
 // Build the editable list of test inputs + the "add from catalog" dropdown
 function renderBenchForm(){
   const wrap = $("#benchFields"); if(!wrap) return;
+  const tests = activeTests();
   wrap.innerHTML = "";
-  activeTests().forEach(def=>{
-    const val = state.benchmarks[def.id] != null ? state.benchmarks[def.id] : "";
-    const sub = def.type === "lift" ? `${def.unit} · ${def.stat} · vs bodyweight`
-              : def.custom          ? `${def.unit} · ${def.stat} · custom`
-              :                       `${def.unit} · ${def.stat}`;
-    const label = document.createElement("label");
-    label.className = "bench-field";
-    label.innerHTML = `
-      <span class="bf-top">${def.label}
-        <button class="bf-del" data-del="${def.id}" title="Remove from list" type="button">✕</button>
-      </span>
-      <span class="bf-sub">${sub}</span>
-      <input id="bm_${def.id}" type="number" step="any" class="text-input small" value="${val}" placeholder="—">`;
-    wrap.appendChild(label);
-  });
+
+  if(!tests.length){
+    wrap.innerHTML = `<p class="bench-empty">Your benchmark is empty. Add the tests you actually do from the dropdown below, or create a custom one — your stats are built from whatever you pick.</p>`;
+  } else {
+    tests.forEach(def=>{
+      const val = state.benchmarks[def.id] != null ? state.benchmarks[def.id] : "";
+      const extra = def.type === "lift" ? " · vs bodyweight"
+                  : def.type === "time" ? " · faster = better"
+                  : def.custom          ? " · custom" : "";
+      const label = document.createElement("label");
+      label.className = "bench-field";
+      label.innerHTML = `
+        <span class="bf-top">${def.label}
+          <button class="bf-del" data-del="${def.id}" title="Remove from list" type="button">✕</button>
+        </span>
+        <span class="bf-sub">${def.unit} · ${def.stat}${extra}</span>
+        <input id="bm_${def.id}" type="number" step="any" class="text-input small" value="${val}" placeholder="—">`;
+      wrap.appendChild(label);
+    });
+  }
 
   const sel = $("#benchAddSelect");
   if(sel){
     const activeSet = new Set(state.benchActive || []);
     const opts = BENCHMARK_CATALOG.filter(t => !activeSet.has(t.id));
-    sel.innerHTML = opts.length
-      ? `<option value="">Add a test…</option>` + opts.map(t => `<option value="${t.id}">${t.label} (${t.stat})</option>`).join("")
-      : `<option value="">All catalog tests added</option>`;
-    sel.disabled = !opts.length;
+    if(!opts.length){
+      sel.innerHTML = `<option value="">All catalog tests added</option>`;
+      sel.disabled = true;
+    } else {
+      const groups = { STR:"Strength", AGI:"Agility", VIT:"Vitality", SEN:"Sense" };
+      let html = `<option value="">Add a test…</option>`;
+      Object.keys(groups).forEach(stat=>{
+        const items = opts.filter(t => t.stat === stat);
+        if(items.length){
+          html += `<optgroup label="${groups[stat]}">` +
+                  items.map(t => `<option value="${t.id}">${t.label}</option>`).join("") +
+                  `</optgroup>`;
+        }
+      });
+      sel.innerHTML = html;
+      sel.disabled = false;
+    }
   }
 }
 
