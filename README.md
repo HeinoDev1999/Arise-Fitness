@@ -8,9 +8,16 @@ from **E-rank to S-rank**. Miss a day and the System hands you a **penalty**.
 
 ## Tech stack
 - **Vanilla JavaScript** (no framework, no build step), **HTML5**, **CSS3**
-- Client-side only — state persisted in the browser via **localStorage**
-- Installable **PWA** (web app manifest + icon)
+- State persisted locally via **localStorage** (offline-first)
+- Optional **cloud sync** via **Supabase** (Postgres + Auth + Row-Level Security)
+- Installable **PWA** with offline **service worker**
 - Hosted on **Vercel** (auto-deploys on every push to `main`)
+
+## Cloud sync
+Sign in (Settings → Cloud Sync) with the same email/password on any device to sync your
+progress. Data is stored as a single per-user JSON row protected by RLS; the app pulls on
+login and pushes (debounced) on every change, last-write-wins. Sign-in is **optional** —
+without it the app is fully local.
 
 ## Highlights
 - Adaptive **daily quest generator** (location × focus × time) from a tagged exercise library
