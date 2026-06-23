@@ -10,14 +10,6 @@ let supaClient = null;
 let syncUser = null;        // { id, email } when signed in
 let pushTimer = null;
 let pushEnabled = false;    // gate pushes until the initial merge resolves
-let bootLocalUpdated = 0;   // local save's timestamp captured BEFORE any render churn
-
-function captureBootUpdated(){
-  try {
-    const r = JSON.parse(localStorage.getItem(SAVE_KEY));
-    bootLocalUpdated = r && r.updatedAt ? Date.parse(r.updatedAt) : 0;
-  } catch(e){ bootLocalUpdated = 0; }
-}
 
 function initSync(){
   if(!window.supabase || !window.SUPA_URL || !window.SUPA_KEY){ renderSyncUI(); return; }
@@ -42,24 +34,31 @@ async function pullAndMerge(){
   if(res.error){ queueNotif("danger","[ SYNC ]","Sync error: "+res.error.message,4000); return; }
 
   const cloud = res.data && res.data.data;
-  const cloudUpdated = cloud && cloud.updatedAt ? Date.parse(cloud.updatedAt) : 0;
+  const cloudM = isMeaningfulState(cloud);
+  const localM = isMeaningfulState(state);
 
-  if(cloud && cloudUpdated >= bootLocalUpdated){
-    // cloud is newer (or this device had none) -> adopt cloud
+  let adopt;
+  if(!cloud)                  adopt = false;            // nothing in cloud -> push local up
+  else if(cloudM && !localM)  adopt = true;             // cloud has data, this device is empty -> take cloud
+  else if(localM && !cloudM)  adopt = false;            // this device has data, cloud empty -> push (recovers a clobber)
+  else {                                                // both (or neither) have data -> newest real edit wins
+    const cu = cloud.updatedAt ? Date.parse(cloud.updatedAt) : 0;
+    const lu = state.updatedAt ? Date.parse(state.updatedAt) : 0;
+    adopt = cu >= lu;
+  }
+
+  pushEnabled = true;
+  if(adopt){
     state = migrate(cloud);
+    persistClean();                                     // don't restamp the adopted save
     lastRenderedLevel = state.level;
     lastRenderedTitle = titleFor(state.level, state.streak);
-    pushEnabled = true;
-    save();
     render();
     queueNotif("ok","[ SYNCED ]","Loaded your latest progress from the cloud.",3000);
   } else {
-    // local was newer (or no cloud yet) -> push it up
-    pushEnabled = true;
     await pushNow();
-    queueNotif("ok","[ SYNCED ]", cloud ? "This device was newer — pushed to the cloud." : "Cloud sync is on.",3000);
+    queueNotif("ok","[ SYNCED ]", cloud ? "This device had your latest — pushed to the cloud." : "Cloud sync is on.",3000);
   }
-  bootLocalUpdated = Date.now();
 }
 
 function schedulePush(){

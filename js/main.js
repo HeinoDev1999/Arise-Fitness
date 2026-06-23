@@ -2,7 +2,6 @@
    main.js — initialization & all event wiring (runs on DOMContentLoaded)
    ===================================================================== */
 function init(){
-  if(typeof captureBootUpdated === "function") captureBootUpdated();
   state = load();
   if(!state){ $("#onboarding").classList.remove("hidden"); }
   else {
