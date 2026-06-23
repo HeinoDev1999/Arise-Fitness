@@ -51,9 +51,34 @@ function migrate(s){
   delete s.stats; // stats are now computed from benchmarks
   return s;
 }
-function load(){ try{ const r=localStorage.getItem(SAVE_KEY); return r?migrate(JSON.parse(r)):null; }catch(e){ return null; } }
+// snapshot of state (minus updatedAt) at last persist/load — used to bump
+// updatedAt ONLY when data actually changed (not on plain re-renders).
+let _cleanSnapshot = null;
+function _diffSnapshot(s){ if(!s) return ""; const c = Object.assign({}, s); delete c.updatedAt; return JSON.stringify(c); }
+
+function load(){
+  try{
+    const r = localStorage.getItem(SAVE_KEY);
+    if(!r) return null;
+    const s = migrate(JSON.parse(r));
+    _cleanSnapshot = _diffSnapshot(s);
+    return s;
+  }catch(e){ return null; }
+}
 function save(){
-  if(state) state.updatedAt = new Date().toISOString();   // last-write timestamp for sync
+  if(state){
+    const snap = _diffSnapshot(state);
+    if(snap !== _cleanSnapshot){                 // real change -> stamp it
+      state.updatedAt = new Date().toISOString();
+      _cleanSnapshot = snap;
+    }
+  }
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
   if(typeof schedulePush === "function") schedulePush();  // debounced cloud push (if signed in)
+}
+// Adopt an externally-sourced state (e.g. from the cloud) WITHOUT marking it
+// as a new local change, so it doesn't look "newer" than its source.
+function persistClean(){
+  _cleanSnapshot = _diffSnapshot(state);
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
 }

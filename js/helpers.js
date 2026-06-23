@@ -22,6 +22,20 @@ function dispToKg(v){ return wUnit()==="lb" ? v/LB_PER_KG : v; }
 function kmToDisp(km){ return dUnit()==="mi" ? km*MI_PER_KM : km; }
 function dispToKm(v){ return dUnit()==="mi" ? v/MI_PER_KM : v; }
 
+/* Does a save contain real progress? Used so an empty/fresh device can never
+   overwrite a cloud save that has data (and vice-versa). */
+function isMeaningfulState(s){
+  if(!s) return false;
+  return (s.level > 1) || (s.totalXp > 0) || (s.totalQuests > 0)
+    || (Array.isArray(s.history) && s.history.length > 0)
+    || (Array.isArray(s.body) && s.body.length > 0)
+    || (Array.isArray(s.statHistory) && s.statHistory.length > 0)
+    || (Array.isArray(s.benchActive) && s.benchActive.length > 0)
+    || (s.benchmarks && Object.keys(s.benchmarks).some(k => k !== "date"))
+    || (Array.isArray(s.customTests) && s.customTests.length > 0)
+    || !!s.today || !!s.penalty;
+}
+
 /* ---------- Benchmark scoring math ---------- */
 function score(value, t50){ return value==null ? null : Math.round(Math.min(130, (value / t50) * 50)); }
 
