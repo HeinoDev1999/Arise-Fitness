@@ -89,6 +89,8 @@ function init(){
 
   // task interactions (delegated): toggle done, or expand instructions
   $("#taskList").addEventListener("click",e=>{
+    const swapBtn = e.target.closest(".task-swap");
+    if(swapBtn){ e.stopPropagation(); swapTask(parseInt(swapBtn.dataset.swap,10)); return; }
     const infoBtn = e.target.closest(".task-info");
     if(infoBtn){
       e.stopPropagation();

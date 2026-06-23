@@ -252,6 +252,12 @@ body{
   display:flex;align-items:center;justify-content:center;
 }
 .task-info:hover,.task-info.open{border-color:var(--accent);background:rgba(56,189,248,.15);box-shadow:0 0 10px var(--glow)}
+.task-swap{
+  flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1px solid var(--text-dim);
+  background:transparent;color:var(--accent);font-size:15px;cursor:pointer;transition:.15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.task-swap:hover{border-color:var(--accent);background:rgba(56,189,248,.15);box-shadow:0 0 10px var(--glow)}
 .task-details{
   margin:-2px 0 10px;padding:12px 14px;border:1px solid var(--panel-border);border-top:0;
   border-radius:0 0 5px 5px;background:rgba(0,0,0,.35);font-size:14px;line-height:1.5;color:var(--text);

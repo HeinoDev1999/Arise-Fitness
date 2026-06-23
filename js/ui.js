@@ -202,11 +202,14 @@ function selectChoice(containerId, btn, attr, setter){
 /* ---------- Quest rendering ---------- */
 function renderTaskList(q){
   const list = $("#taskList"); list.innerHTML = "";
+  const swappable = q.kind !== "penalty";
   let totalXp = 0;
   q.tasks.forEach((t,i)=>{
     totalXp += t.xp;
     const ex = EX_BY_ID[t.id] || {};
     const xpText = t.xp > 0 ? `<span class="task-xp"> · +${t.xp} EXP</span>` : "";
+    const swapBtn = (swappable && !t.done)
+      ? `<button class="task-swap" data-swap="${i}" title="Swap this exercise" type="button">⇄</button>` : "";
     const li = document.createElement("li");
     li.className = "task-wrap";
     li.innerHTML = `
@@ -218,6 +221,7 @@ function renderTaskList(q){
           </div>
           <span class="task-target">${t.target}</span>${xpText}
         </div>
+        ${swapBtn}
         <button class="task-info" data-info="${i}" title="How to do it">ⓘ</button>
       </div>
       <div class="task-details hidden" id="details-${i}">

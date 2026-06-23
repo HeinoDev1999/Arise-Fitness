@@ -147,6 +147,40 @@ function activeQuest(){
   return state.today;
 }
 
+/* ---------- Swap a single exercise (keep the rest of the quest) ---------- */
+function swapTask(i){
+  const q = activeQuest();
+  if(!q || q.kind === "penalty" || q.completed) return;
+  const t = q.tasks[i];
+  if(!t || t.done) return;
+
+  const m = MODES[q.mode];
+  const inQuest = new Set(q.tasks.map(x => x.id));
+  // candidates: same stat, valid for this location, not already in the quest
+  let pool = EXERCISES.filter(e => e.stat === t.stat && e.loc.includes(q.location) && !inQuest.has(e.id));
+  // for strength, prefer an exercise within the quest's targeted muscles
+  // (fall back to the swapped exercise's own muscles when no muscles were picked)
+  if(q.focus === "strength"){
+    const target = (q.muscles && q.muscles.length) ? q.muscles
+                 : ((EX_BY_ID[t.id] && EX_BY_ID[t.id].muscles) || []);
+    const sameMuscle = pool.filter(e => e.muscles && e.muscles.some(mm => target.includes(mm)));
+    if(sameMuscle.length) pool = sameMuscle;
+  }
+  if(!pool.length){ queueNotif("danger","[ SYSTEM ]","No alternative for this slot here, Hunter.",2800); return; }
+
+  const ex = rand(pool);
+  const xpScale = q.kind === "gate" ? gateMultiplier() : 1;
+  const oldName = t.name;
+  q.tasks[i] = {
+    id: ex.id, name: ex.name, stat: ex.stat,
+    target: buildTarget(ex, m.mult),
+    xp: Math.max(1, Math.round(ex.xp * (ex.stat === "INT" ? 1 : m.mult) * xpScale)),
+    done: false,
+  };
+  save(); render();
+  queueNotif("ok","[ EXERCISE SWAPPED ]",`${oldName} → ${ex.name}`,2600);
+}
+
 /* ---------- Task actions ---------- */
 function toggleTask(i){
   const q = activeQuest(); if(!q || q.completed) return;
