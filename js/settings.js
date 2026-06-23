@@ -5,6 +5,7 @@
 function openSettings(){
   if($("#setName")) $("#setName").value = state.name || "";
   if(typeof renderUnits === "function") renderUnits();
+  if(typeof renderSyncUI === "function") renderSyncUI();
   switchTab("settings");
 }
 

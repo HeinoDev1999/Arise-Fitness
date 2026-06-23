@@ -23,6 +23,7 @@ function defaultState(name){
     customTests: [],   // user-created test defs {id,label,unit,stat,type:"value",t50,custom:true}
     statHistory: [],   // [{date, STR, AGI, VIT, SEN, INT}] snapshot per benchmark save (for trends)
     units: { weight:"kg", distance:"km" }, // display units (values are stored canonical: kg, km)
+    updatedAt: null,   // ISO timestamp of last change (drives last-write-wins cloud sync)
     history:[],
   };
 }
@@ -51,4 +52,8 @@ function migrate(s){
   return s;
 }
 function load(){ try{ const r=localStorage.getItem(SAVE_KEY); return r?migrate(JSON.parse(r)):null; }catch(e){ return null; } }
-function save(){ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
+function save(){
+  if(state) state.updatedAt = new Date().toISOString();   // last-write timestamp for sync
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  if(typeof schedulePush === "function") schedulePush();  // debounced cloud push (if signed in)
+}

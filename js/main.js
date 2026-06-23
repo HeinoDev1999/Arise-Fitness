@@ -2,6 +2,7 @@
    main.js — initialization & all event wiring (runs on DOMContentLoaded)
    ===================================================================== */
 function init(){
+  if(typeof captureBootUpdated === "function") captureBootUpdated();
   state = load();
   if(!state){ $("#onboarding").classList.remove("hidden"); }
   else {
@@ -119,6 +120,16 @@ function init(){
     if(w){ state.units.weight = w.dataset.uw; save(); renderUnits(); render(); }
     else if(d){ state.units.distance = d.dataset.ud; save(); renderUnits(); render(); }
   });
+
+  // cloud sync (Supabase)
+  $("#syncGroup").addEventListener("click",e=>{
+    const b = e.target.closest("button"); if(!b) return;
+    if(b.id === "signInBtn")  syncSignIn();
+    else if(b.id === "signUpBtn")  syncSignUp();
+    else if(b.id === "signOutBtn") syncSignOut();
+    else if(b.id === "syncNowBtn") pullAndMerge();
+  });
+  if(typeof initSync === "function") initSync();
 }
 
 document.addEventListener("DOMContentLoaded", init);
