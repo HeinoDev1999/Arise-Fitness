@@ -342,10 +342,19 @@ function renderHistory(){
   });
 }
 
-/* ---------- Show the app (after onboarding / load) ---------- */
-function showApp(){
+/* ---------- Screen routing ---------- */
+function hideAll(){
+  $("#authScreen") && $("#authScreen").classList.add("hidden");
   $("#onboarding").classList.add("hidden");
+  $("#app").classList.add("hidden");
+}
+function showAuthScreen(){ hideAll(); if($("#authScreen")) $("#authScreen").classList.remove("hidden"); }
+function showOnboarding(){ hideAll(); $("#onboarding").classList.remove("hidden"); }
+
+function showApp(){
+  hideAll();
   $("#app").classList.remove("hidden");
+  if(typeof dailyMaintenance === "function") dailyMaintenance();  // penalty + daily gate reset on the final state
   lastRenderedLevel = state.level;
   lastRenderedTitle = titleFor(state.level, state.streak);
   render();
