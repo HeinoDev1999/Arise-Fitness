@@ -2,24 +2,25 @@
    main.js — initialization & all event wiring (runs on DOMContentLoaded)
    ===================================================================== */
 function init(){
-  state = load();
-  if(!state){ $("#onboarding").classList.remove("hidden"); }
-  else {
-    checkPenaltyOnLoad();
-    // reset daily gate counter on a new day
-    const today = todayStr();
-    if(state.gatesDate !== today){ state.gatesToday = 0; state.gatesDate = today; save(); }
-    showApp();
-  }
+  state = load();   // local cache (may be null); entry decided in bootEntry() after wiring
   if($("#bodyDate")) $("#bodyDate").value = todayStr();
 
-  // onboarding
+  // onboarding (hunter name) — reached for a brand-new account or offline start
   $("#startBtn").addEventListener("click",()=>{
     const name = ($("#hunterName").value || "Hunter").trim().slice(0,18) || "Hunter";
     state = defaultState(name); save(); showApp();
     queueNotif("level","[ SYSTEM ]","You have become a Player. Begin your daily quest.",4200);
   });
   $("#hunterName").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#startBtn").click(); });
+
+  // up-front auth screen
+  $("#authSignInBtn").addEventListener("click", authSignIn);
+  $("#authSignUpBtn").addEventListener("click", authSignUp);
+  $("#authPass").addEventListener("keydown",e=>{ if(e.key==="Enter") authSignIn(); });
+  $("#authOfflineBtn").addEventListener("click",()=>{
+    localStorage.setItem("offlineMode","1");
+    if(state) showApp(); else showOnboarding();
+  });
 
   // tabs
   $$(".tab").forEach(tab=>{
@@ -126,9 +127,28 @@ function init(){
     if(b.id === "signInBtn")  syncSignIn();
     else if(b.id === "signUpBtn")  syncSignUp();
     else if(b.id === "signOutBtn") syncSignOut();
-    else if(b.id === "syncNowBtn") pullAndMerge();
+    else if(b.id === "syncNowBtn"){
+      pullCloud().then(()=>{
+        lastRenderedLevel = state.level;
+        lastRenderedTitle = titleFor(state.level, state.streak);
+        render();
+        queueNotif("ok","[ SYNCED ]","Up to date with your account.",2400);
+      });
+    }
   });
-  if(typeof initSync === "function") initSync();
+  bootEntry();
+}
+
+// Decide what to show on launch: offline-mode -> local; otherwise let the
+// cloud layer route (session -> pull & app; no session -> login screen).
+function bootEntry(){
+  if(localStorage.getItem("offlineMode") === "1"){
+    if(typeof createSupa === "function") createSupa();   // so Settings → Cloud Sync can still sign in later
+    if(state) showApp(); else showOnboarding();
+    return;
+  }
+  if(typeof initSync === "function"){ initSync(); }
+  else if(state){ showApp(); } else { showOnboarding(); }
 }
 
 document.addEventListener("DOMContentLoaded", init);

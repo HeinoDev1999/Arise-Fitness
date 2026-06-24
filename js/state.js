@@ -23,7 +23,6 @@ function defaultState(name){
     customTests: [],   // user-created test defs {id,label,unit,stat,type:"value",t50,custom:true}
     statHistory: [],   // [{date, STR, AGI, VIT, SEN, INT}] snapshot per benchmark save (for trends)
     units: { weight:"kg", distance:"km" }, // display units (values are stored canonical: kg, km)
-    updatedAt: null,   // ISO timestamp of last change (drives last-write-wins cloud sync)
     history:[],
   };
 }
@@ -66,18 +65,16 @@ function load(){
   }catch(e){ return null; }
 }
 function save(){
-  if(state){
-    const snap = _diffSnapshot(state);
-    if(snap !== _cleanSnapshot){                 // real change -> stamp it
-      state.updatedAt = new Date().toISOString();
-      _cleanSnapshot = snap;
-    }
-  }
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
-  if(typeof schedulePush === "function") schedulePush();  // debounced cloud push (if signed in)
+  // only push to the cloud when the data actually changed (avoids spamming on plain re-renders)
+  const snap = _diffSnapshot(state);
+  if(snap !== _cleanSnapshot){
+    _cleanSnapshot = snap;
+    if(typeof schedulePush === "function") schedulePush();
+  }
 }
-// Adopt an externally-sourced state (e.g. from the cloud) WITHOUT marking it
-// as a new local change, so it doesn't look "newer" than its source.
+// Adopt an externally-sourced state (e.g. from the cloud) and persist it
+// WITHOUT scheduling an immediate echo push back to the cloud.
 function persistClean(){
   _cleanSnapshot = _diffSnapshot(state);
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));

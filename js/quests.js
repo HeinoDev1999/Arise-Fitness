@@ -98,6 +98,13 @@ function addXp(amount){
   return leveled;
 }
 
+/* ---------- Start-of-day maintenance (run on the final state, after any cloud pull) ---------- */
+function dailyMaintenance(){
+  checkPenaltyOnLoad();
+  const today = todayStr();
+  if(state.gatesDate !== today){ state.gatesToday = 0; state.gatesDate = today; save(); }
+}
+
 /* ---------- Penalty / streak check (on load) ---------- */
 function checkPenaltyOnLoad(){
   const today = todayStr();
