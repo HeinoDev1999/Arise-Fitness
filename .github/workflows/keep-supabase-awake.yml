@@ -1,0 +1,25 @@
+# Free-tier Supabase projects auto-pause after ~7 days without activity,
+# which takes login/sync down. This pings the REST API twice a week so the
+# project stays awake. (The anon key is already public in js/supabase-config.js;
+# it grants nothing beyond what Row-Level Security allows.)
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: "0 6 * * 1,4" # Mondays & Thursdays, 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0d2lqbnJ1d25idnl3aGlneWRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNjk0MzAsImV4cCI6MjA5Nzc0NTQzMH0.Dibg0W44l0VesBcS60cdRQZGMTcBFC3P1sSIL_DzLGI"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://ltwijnruwnbvywhigydc.supabase.co/rest/v1/saves?select=user_id&limit=1" \
+            -H "apikey: $KEY" \
+            -H "Authorization: Bearer $KEY")
+          echo "Supabase responded with HTTP $STATUS"
+          # 200 = awake; anything else likely means the project is paused/broken
+          [ "$STATUS" = "200" ]
