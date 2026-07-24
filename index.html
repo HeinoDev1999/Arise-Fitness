@@ -31,13 +31,12 @@
       <div class="panel-corner bl"></div><div class="panel-corner br"></div>
       <div class="system-tag">[ SYSTEM ACCESS ]</div>
       <h1 class="onboard-title">ENTER THE SYSTEM</h1>
-      <p class="onboard-sub">Sign in to sync your progress across every device.</p>
+      <p class="onboard-sub">Sign in with your account to see your progress — on any device.</p>
       <input id="authEmail" class="text-input" type="email" placeholder="Email" autocomplete="username" />
       <input id="authPass" class="text-input" type="password" placeholder="Password (6+ chars)" autocomplete="current-password" />
       <button id="authSignInBtn" class="btn btn-primary">SIGN IN</button>
       <button id="authSignUpBtn" class="btn btn-ghost" style="margin-top:8px">CREATE ACCOUNT</button>
       <p id="authMsg" class="onboard-fine"></p>
-      <button id="authOfflineBtn" class="link-btn" style="display:block;margin:6px auto 0">Use offline, without an account</button>
     </div>
   </section>
 
@@ -400,13 +399,13 @@
           </div>
         </div>
 
-        <div class="setup-group" id="syncGroup"><!-- cloud sync (rendered by sync.js) --></div>
+        <div class="setup-group" id="syncGroup"><!-- account status (rendered by sync.js) --></div>
 
         <div class="setup-group" id="unitsGroup"><!-- units added with the units feature --></div>
 
         <div class="setup-group">
           <div class="setup-label">DATA &amp; BACKUP</div>
-          <p class="sys-caption">Your progress lives only in this browser. Export a backup file so you never lose it — and to move it to another device.</p>
+          <p class="sys-caption">Your progress is saved to your account automatically. Export a backup file as an extra copy, or to move data between accounts.</p>
           <button id="exportBtn" class="btn btn-ghost btn-small" type="button" style="width:100%;margin-bottom:8px">⬇ Export backup</button>
           <label class="btn btn-ghost btn-small import-label">⬆ Import backup
             <input id="importFile" type="file" accept="application/json,.json" hidden />
@@ -417,7 +416,7 @@
     </section>
 
     <footer class="app-footer">
-      <span class="footer-note">THE SYSTEM · your data stays on this device</span>
+      <span class="footer-note">THE SYSTEM · synced to your account</span>
     </footer>
   </main>
 

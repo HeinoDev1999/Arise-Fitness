@@ -56,7 +56,7 @@ function importData(file){
     if(!obj || typeof obj !== "object" || obj.level === undefined || obj.name === undefined){
       queueNotif("danger","[ IMPORT FAILED ]","That doesn't look like a SYSTEM backup.",3800); return;
     }
-    if(!confirm("Import this backup? It will REPLACE all your current progress on this device.")) return;
+    if(!confirm("Import this backup? It will REPLACE all your current progress in your account.")) return;
     state = migrate(obj);
     save();
     lastRenderedLevel = state.level;
