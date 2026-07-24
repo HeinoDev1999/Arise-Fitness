@@ -1,6 +1,7 @@
 /* =====================================================================
    state.js — the save object: defaults, migration, load & save
-   Everything persists locally via localStorage.
+   Your account's row in Supabase is the source of truth once signed in;
+   localStorage here is just a technical cache (see js/sync.js).
    ===================================================================== */
 
 let state = null;
@@ -50,10 +51,11 @@ function migrate(s){
   delete s.stats; // stats are now computed from benchmarks
   return s;
 }
-// snapshot of state (minus updatedAt) at last persist/load — used to bump
-// updatedAt ONLY when data actually changed (not on plain re-renders).
+// snapshot of state at last persist/load — used to detect a real data
+// change so save() only pushes to the cloud when something actually changed
+// (not on plain re-renders).
 let _cleanSnapshot = null;
-function _diffSnapshot(s){ if(!s) return ""; const c = Object.assign({}, s); delete c.updatedAt; return JSON.stringify(c); }
+function _diffSnapshot(s){ return s ? JSON.stringify(s) : ""; }
 
 function load(){
   try{

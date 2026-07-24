@@ -8,16 +8,16 @@ from **E-rank to S-rank**. Miss a day and the System hands you a **penalty**.
 
 ## Tech stack
 - **Vanilla JavaScript** (no framework, no build step), **HTML5**, **CSS3**
-- State persisted locally via **localStorage** (offline-first)
-- Optional **cloud sync** via **Supabase** (Postgres + Auth + Row-Level Security)
-- Installable **PWA** with offline **service worker**
+- **Account-based, cloud-backed:** your data lives in **Supabase** (Postgres + Auth + Row-Level Security);
+  localStorage is just a technical cache
+- Installable **PWA** with a service worker (caches the app shell for fast loads)
 - Hosted on **Vercel** (auto-deploys on every push to `main`)
 
-## Cloud sync
-Sign in (Settings → Cloud Sync) with the same email/password on any device to sync your
-progress. Data is stored as a single per-user JSON row protected by RLS; the app pulls on
-login and pushes (debounced) on every change, last-write-wins. Sign-in is **optional** —
-without it the app is fully local.
+## Accounts & sync
+THE SYSTEM is an online, account-based app. Create an account or sign in on the login screen;
+your progress is a single JSON row in Supabase, protected by Row-Level Security so only you can
+read or write it. Sign in with the same email/password on any device and your progress is right
+there — nothing to configure, no offline mode, no merging.
 
 ## Highlights
 - Adaptive **daily quest generator** (location × focus × time) from a tagged exercise library
@@ -30,9 +30,9 @@ without it the app is fully local.
 - Code organized into focused modules under `js/`
 
 ## How to use it
-Just open **`index.html`** in any browser (double-click it). That's it — no install.
+Open the live demo (or `index.html` in a browser) and sign in / create an account.
 
-1. Enter your Hunter name.
+1. Enter your Hunter name (first time only — this creates your save).
 2. Each day, open **Daily Quest** and choose:
    - **Location** — Home / Gym / Outdoor
    - **Focus** — Full Body / Strength / Cardio / Mobility (pick "Strength" for a strength-only day, etc.)
@@ -90,17 +90,18 @@ E → D → C → B → A → S, and titles from *The Weakest* (L1) up to *Shado
 *The Eternal* (100-day streak).
 
 ## Data
-Everything saves locally in your browser (`localStorage`). Nothing is uploaded.
+Your progress is stored in your Supabase account (one JSON row per user, RLS-protected).
+localStorage holds a technical local copy only — your account is the source of truth.
 
 ## Roadmap
-- [x] **Phase 1** — Working themed app, local save
+- [x] **Phase 1** — Working themed app
 - [x] Focus selector (Strength / Cardio / Mobility / Full Body) + exercise instructions
 - [x] Gates (optional bonus workouts) + Body metrics tracking
 - [x] **Benchmark stats** — STR/AGI/VIT/SEN computed from logged tests; INT = discipline score
 - [x] First-run guide, **rest days** (no penalty, streak preserved), remembers last quest choices
 - [x] **Penalty Quest** (mandatory redemption workout after a failed daily) + expanded titles (level + streak)
-- [ ] **Phase 2** — Cloud sync (Supabase) so phone + PC share progress
-- [ ] **Phase 3** — Host online (free) + installable on phone (PWA)
+- [x] **Phase 2** — Accounts + cloud sync (Supabase) so any device shows your progress
+- [x] Hosted online (Vercel, free) + installable on phone (PWA)
 
 ## Files
 - `index.html` — structure
@@ -113,4 +114,7 @@ Everything saves locally in your browser (`localStorage`). Nothing is uploaded.
   - `quests.js` — quest/penalty generation, progression, streaks, task actions
   - `body.js` — body-metrics tracking + weight sparkline
   - `ui.js` — all rendering (status, quest, guide, history, tabs)
+  - `settings.js` — rename, units, data export/import, reset
+  - `supabase-config.js` — Supabase project URL + public anon key
+  - `sync.js` — account/auth + cloud load & save
   - `main.js` — init & event wiring

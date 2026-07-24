@@ -2,10 +2,10 @@
    main.js — initialization & all event wiring (runs on DOMContentLoaded)
    ===================================================================== */
 function init(){
-  state = load();   // local cache (may be null); entry decided in bootEntry() after wiring
+  state = load();   // local technical cache only; initSync() below is what decides what's shown
   if($("#bodyDate")) $("#bodyDate").value = todayStr();
 
-  // onboarding (hunter name) — reached for a brand-new account or offline start
+  // onboarding (hunter name) — reached the first time a brand-new account signs in
   $("#startBtn").addEventListener("click",()=>{
     const name = ($("#hunterName").value || "Hunter").trim().slice(0,18) || "Hunter";
     state = defaultState(name); save(); showApp();
@@ -17,10 +17,6 @@ function init(){
   $("#authSignInBtn").addEventListener("click", authSignIn);
   $("#authSignUpBtn").addEventListener("click", authSignUp);
   $("#authPass").addEventListener("keydown",e=>{ if(e.key==="Enter") authSignIn(); });
-  $("#authOfflineBtn").addEventListener("click",()=>{
-    localStorage.setItem("offlineMode","1");
-    if(state) showApp(); else showOnboarding();
-  });
 
   // tabs
   $$(".tab").forEach(tab=>{
@@ -104,10 +100,14 @@ function init(){
     if(row) toggleTask(parseInt(row.dataset.i,10));
   });
 
-  // reset all
-  $("#resetAllBtn").addEventListener("click",()=>{
+  // reset all — wipes the account's saved row, not just this device's cache
+  $("#resetAllBtn").addEventListener("click", async ()=>{
     if(!confirm("Reset ALL progress and start over? This cannot be undone.")) return;
-    localStorage.removeItem(SAVE_KEY); location.reload();
+    if(supaClient && syncUser){
+      try { await supaClient.from("saves").delete().eq("user_id", syncUser.id); } catch(e){}
+    }
+    localStorage.removeItem(SAVE_KEY);
+    location.reload();
   });
 
   // settings
@@ -121,34 +121,11 @@ function init(){
     else if(d){ state.units.distance = d.dataset.ud; save(); renderUnits(); render(); }
   });
 
-  // cloud sync (Supabase)
+  // account (Supabase) — Settings only ever shows the signed-in state
   $("#syncGroup").addEventListener("click",e=>{
-    const b = e.target.closest("button"); if(!b) return;
-    if(b.id === "signInBtn")  syncSignIn();
-    else if(b.id === "signUpBtn")  syncSignUp();
-    else if(b.id === "signOutBtn") syncSignOut();
-    else if(b.id === "syncNowBtn"){
-      pullCloud().then(()=>{
-        lastRenderedLevel = state.level;
-        lastRenderedTitle = titleFor(state.level, state.streak);
-        render();
-        queueNotif("ok","[ SYNCED ]","Up to date with your account.",2400);
-      });
-    }
+    const b = e.target.closest("button"); if(b && b.id === "signOutBtn") syncSignOut();
   });
-  bootEntry();
-}
-
-// Decide what to show on launch: offline-mode -> local; otherwise let the
-// cloud layer route (session -> pull & app; no session -> login screen).
-function bootEntry(){
-  if(localStorage.getItem("offlineMode") === "1"){
-    if(typeof createSupa === "function") createSupa();   // so Settings → Cloud Sync can still sign in later
-    if(state) showApp(); else showOnboarding();
-    return;
-  }
-  if(typeof initSync === "function"){ initSync(); }
-  else if(state){ showApp(); } else { showOnboarding(); }
+  initSync();
 }
 
 document.addEventListener("DOMContentLoaded", init);
