@@ -9,6 +9,9 @@ function renderExperience(){
   const wNote = bw
     ? `Tuned using your latest weight: <b>${round1(kgToDisp(bw))} ${wUnit()}</b>.`
     : `Log your weight in the <b>Body</b> tab to tune bodyweight exercises to you.`;
+  const pct = Math.round((adaptFactor() - 1) * 100);
+  const adaptNote = Math.abs(adaptFactor() - 1) >= 0.01
+    ? `<p class="sys-caption">Your "how did that feel?" ratings have adjusted targets by <b>${pct > 0 ? "+" : ""}${pct}%</b>. <button id="resetAdaptBtn" class="link-btn" type="button">Reset</button></p>` : "";
   g.innerHTML = `
     <div class="setup-label">EXPERIENCE LEVEL</div>
     <div class="exp-choices" id="expSettings">
@@ -17,7 +20,7 @@ function renderExperience(){
           ${EXPERIENCE[k].label}<span class="choice-sub">${EXPERIENCE[k].desc}</span>
         </button>`).join("")}
     </div>
-    <p class="sys-caption">Scales every rep, duration and distance — and how many hard exercises you get. ${wNote} Applies to quests you generate from now on.</p>`;
+    <p class="sys-caption">Scales every rep, duration and distance — and how many hard exercises you get. ${wNote} Applies to quests you generate from now on.</p>${adaptNote}`;
 }
 
 function openSettings(){
