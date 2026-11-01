@@ -23,8 +23,25 @@ function renderExperience(){
     <p class="sys-caption">Scales every rep, duration and distance — and how many hard exercises you get. ${wNote} Applies to quests you generate from now on.</p>${adaptNote}`;
 }
 
+/* Gym equipment checklist: gym quests only use exercises you can actually do there. */
+function renderGear(){
+  const g = $("#gearGroup"); if(!g) return;
+  const have = new Set(state.gymGear || []);
+  g.innerHTML = `
+    <div class="setup-label">MY GYM'S EQUIPMENT</div>
+    <p class="sys-caption">Tick what your gym has — gym quests will only use those. Bodyweight moves are always available.</p>
+    <div class="gear-grid">
+      ${Object.keys(EQUIPMENT).map(k => `<button class="gear-chip${have.has(k)?" on":""}" data-gear="${k}" type="button">${have.has(k)?"✓ ":""}${EQUIPMENT[k]}</button>`).join("")}
+    </div>
+    <div class="settings-row" style="margin-top:8px">
+      <button class="mini-chip" data-gearall="1" type="button">Select all</button>
+      <button class="mini-chip" data-gearnone="1" type="button">Clear all</button>
+    </div>`;
+}
+
 function openSettings(){
   if($("#setName")) $("#setName").value = state.name || "";
+  renderGear();
   renderExperience();
   if(typeof renderUnits === "function") renderUnits();
   if(typeof renderSyncUI === "function") renderSyncUI();

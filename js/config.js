@@ -153,51 +153,51 @@ const EXERCISES = [
     tip:"Lower your legs if your back starts to arch off the floor." },
 
   /* ---- STRENGTH: gym — PUSH ---- */
-  { id:"bench", name:"Bench Press", stat:"STR", splits:["upper","push"], muscles:["chest","triceps","shoulders"], loc:["gym"], unit:"sets", base:3, reps:10, xp:24,
+  { id:"bench", gear:["bench","dumbbells|barbell"], name:"Bench Press", stat:"STR", splits:["upper","push"], muscles:["chest","triceps","shoulders"], loc:["gym"], unit:"sets", base:3, reps:10, xp:24,
     need:"Barbell or dumbbells + a bench.",
     how:"Lie on the bench, lower the bar to mid-chest under control, then press it back up. Pick a weight where the last rep of each set is tough but clean.",
     tip:"Keep your shoulder blades pulled back and feet planted." },
-  { id:"ohp", name:"Shoulder Press", stat:"STR", splits:["upper","push"], muscles:["shoulders","triceps"], loc:["gym"], unit:"sets", base:3, reps:10, xp:20,
+  { id:"ohp", gear:["dumbbells|barbell"], name:"Shoulder Press", stat:"STR", splits:["upper","push"], muscles:["shoulders","triceps"], loc:["gym"], unit:"sets", base:3, reps:10, xp:20,
     need:"Dumbbells or a barbell.",
     how:"From shoulder height, press the weight overhead until your arms are straight, then lower under control.",
     tip:"Brace your core so you don't arch your lower back." },
-  { id:"latraise", name:"Lateral Raises", stat:"STR", splits:["upper","push"], muscles:["shoulders"], loc:["gym"], unit:"sets", base:3, reps:12, xp:16,
+  { id:"latraise", gear:["dumbbells"], name:"Lateral Raises", stat:"STR", splits:["upper","push"], muscles:["shoulders"], loc:["gym"], unit:"sets", base:3, reps:12, xp:16,
     need:"A pair of dumbbells.",
     how:"Standing, raise the dumbbells out to your sides up to shoulder height, then lower slowly.",
     tip:"Lead with your elbows; use a weight you can control, not swing." },
 
   /* ---- STRENGTH: gym — PULL ---- */
-  { id:"pulldown", name:"Lat Pulldown", stat:"STR", splits:["upper","pull"], muscles:["back","biceps"], loc:["gym"], unit:"sets", base:3, reps:10, xp:22,
+  { id:"pulldown", gear:["cable|machines"], name:"Lat Pulldown", stat:"STR", splits:["upper","pull"], muscles:["back","biceps"], loc:["gym"], unit:"sets", base:3, reps:10, xp:22,
     need:"Lat pulldown machine.",
     how:"Grip slightly wider than shoulders. Pull the bar to your upper chest while squeezing your back, then control it back up.",
     tip:"Lead the pull with your elbows, not your hands." },
-  { id:"pullups", name:"Pull-ups", stat:"STR", splits:["upper","pull"], muscles:["back","biceps"], loc:["gym"], unit:"reps", base:8, xp:24,
+  { id:"pullups", gear:["pullupbar"], name:"Pull-ups", stat:"STR", splits:["upper","pull"], muscles:["back","biceps"], loc:["gym"], unit:"reps", base:8, xp:24,
     need:"A pull-up bar.",
     how:"Hang from the bar, pull your chin above it by driving your elbows down, then lower under control.",
     tip:"Use a band or the assisted-pull-up machine if you need help." },
-  { id:"dbrow", name:"Dumbbell Rows", stat:"STR", splits:["upper","pull"], muscles:["back","biceps"], loc:["gym"], unit:"sets", base:3, reps:10, xp:20,
+  { id:"dbrow", gear:["dumbbells"], name:"Dumbbell Rows", stat:"STR", splits:["upper","pull"], muscles:["back","biceps"], loc:["gym"], unit:"sets", base:3, reps:10, xp:20,
     need:"A dumbbell (bench optional).",
     how:"Hinge forward at the hips. Row the dumbbell up to your hip, squeeze, then lower slowly. Do both sides.",
     tip:"Pull with your back muscles, not just your arm." },
-  { id:"curls", name:"Bicep Curls", stat:"STR", splits:["upper","pull"], muscles:["biceps"], loc:["gym"], unit:"sets", base:3, reps:12, xp:16,
+  { id:"curls", gear:["dumbbells|barbell"], name:"Bicep Curls", stat:"STR", splits:["upper","pull"], muscles:["biceps"], loc:["gym"], unit:"sets", base:3, reps:12, xp:16,
     need:"Dumbbells or a barbell.",
     how:"Arms at your sides, curl the weight up by bending your elbows, then lower slowly.",
     tip:"Keep your elbows pinned to your sides — don't swing." },
-  { id:"facepull", name:"Face Pulls", stat:"STR", splits:["upper","pull"], muscles:["shoulders","back"], loc:["gym"], unit:"sets", base:3, reps:15, xp:14,
+  { id:"facepull", gear:["cable"], name:"Face Pulls", stat:"STR", splits:["upper","pull"], muscles:["shoulders","back"], loc:["gym"], unit:"sets", base:3, reps:15, xp:14,
     need:"A cable machine with a rope.",
     how:"Pull the rope toward your face, splitting your hands apart, squeezing your rear shoulders, then return slowly.",
     tip:"Great for posture and shoulder health — keep it light and controlled." },
 
   /* ---- STRENGTH: gym — LOWER ---- */
-  { id:"legpress", name:"Leg Press", stat:"STR", splits:["lower"], muscles:["quads","glutes"], loc:["gym"], unit:"sets", base:3, reps:12, xp:22,
+  { id:"legpress", gear:["machines"], name:"Leg Press", stat:"STR", splits:["lower"], muscles:["quads","glutes"], loc:["gym"], unit:"sets", base:3, reps:12, xp:22,
     need:"Leg press machine.",
     how:"Feet shoulder-width on the platform. Lower until your knees reach about 90°, then press without harshly locking your knees.",
     tip:"Don't let your lower back round off the pad." },
-  { id:"rdl", name:"Romanian Deadlift", stat:"STR", splits:["lower"], muscles:["hamstrings","glutes"], loc:["gym"], unit:"sets", base:3, reps:10, xp:22,
+  { id:"rdl", gear:["dumbbells|barbell"], name:"Romanian Deadlift", stat:"STR", splits:["lower"], muscles:["hamstrings","glutes"], loc:["gym"], unit:"sets", base:3, reps:10, xp:22,
     need:"A barbell or dumbbells.",
     how:"Slight knee bend, hinge at the hips pushing your butt back, lower the weight along your legs, then drive your hips forward to stand.",
     tip:"Feel the stretch in your hamstrings; keep your back flat." },
-  { id:"legcurl", name:"Leg Curl", stat:"STR", splits:["lower"], muscles:["hamstrings"], loc:["gym"], unit:"sets", base:3, reps:12, xp:18,
+  { id:"legcurl", gear:["machines"], name:"Leg Curl", stat:"STR", splits:["lower"], muscles:["hamstrings"], loc:["gym"], unit:"sets", base:3, reps:12, xp:18,
     need:"Leg curl machine.",
     how:"Curl your heels toward your glutes against the pad, then lower under control.",
     tip:"Avoid jerking — squeeze the hamstrings each rep." },
@@ -229,7 +229,7 @@ const EXERCISES = [
     tip:"The hard intervals should leave you genuinely breathless." },
 
   /* ---- VITALITY: endurance / fat-burn ---- */
-  { id:"run", name:"Run", stat:"VIT", loc:["outdoor","gym"], unit:"km", base:2, xp:26,
+  { id:"run", gear:["treadmill"], name:"Run", stat:"VIT", loc:["outdoor","gym"], unit:"km", base:2, xp:26,
     need:"Running shoes (or a treadmill).",
     how:"Run the listed distance at a steady pace you could hold a short conversation at.",
     tip:"Start slower than feels necessary — finish strong, not gassed early." },
@@ -245,11 +245,11 @@ const EXERCISES = [
     need:"A wall.",
     how:"Slide down a wall until your thighs are parallel to the floor (like sitting in an invisible chair) and hold.",
     tip:"Keep your whole back flat against the wall." },
-  { id:"row", name:"Rowing Machine", stat:"VIT", loc:["gym"], unit:"min", base:12, xp:22,
+  { id:"row", gear:["rower"], name:"Rowing Machine", stat:"VIT", loc:["gym"], unit:"min", base:12, xp:22,
     need:"Rowing machine.",
     how:"Row at a steady pace for the listed minutes. Each stroke: drive with your legs, then lean back, then pull with your arms.",
     tip:"It's legs first, not arms first — that's where the power comes from." },
-  { id:"bike", name:"Cycling", stat:"VIT", loc:["gym","outdoor"], unit:"min", base:20, xp:20,
+  { id:"bike", gear:["bike"], name:"Cycling", stat:"VIT", loc:["gym","outdoor"], unit:"min", base:20, xp:20,
     need:"A bike or stationary bike.",
     how:"Cycle at a steady, moderate effort for the listed minutes.",
     tip:"Aim for a smooth cadence around 80–90 rpm if you can." },
@@ -324,6 +324,22 @@ const REF_WEIGHT_KG = 75;   // the weight the base numbers are tuned for
 const BEGINNER_SKIP = new Set([
   "pullups","burpees","pike","diamond","bulgarian","hollow","sprints","jumpsq","dips",
 ]);
+
+/* ---------- Gym equipment ----------
+   Gym quests only use exercises whose equipment you've ticked in Settings.
+   An exercise's `gear` lists requirements; "a|b" means either one works.
+   (Only checked at the gym — bodyweight moves and outdoor/home are unaffected.) */
+const EQUIPMENT = {
+  dumbbells: "Dumbbells",
+  barbell:   "Barbell & plates",
+  bench:     "Bench",
+  cable:     "Cable machine",
+  machines:  "Weight machines (leg press, leg curl, lat pulldown)",
+  pullupbar: "Pull-up bar",
+  treadmill: "Treadmill",
+  bike:      "Exercise bike",
+  rower:     "Rowing machine",
+};
 
 /* ---------- Mode (time) config ---------- */
 const MODES = {
