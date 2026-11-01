@@ -136,6 +136,7 @@ function init(){
     else return;
     save(); renderGear();
   });
+  wireRestBar();
   $("#feelRow").addEventListener("click",e=>{ const b = e.target.closest("[data-feel]"); if(b) setFeel(b.dataset.feel); });
   $("#expGroup").addEventListener("click",e=>{
     if(e.target.id === "resetAdaptBtn"){ state.adapt = 1; save(); renderExperience(); render(); return; }
