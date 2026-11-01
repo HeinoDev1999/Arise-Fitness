@@ -8,10 +8,21 @@ function init(){
   // onboarding (hunter name) — reached the first time a brand-new account signs in
   $("#startBtn").addEventListener("click",()=>{
     const name = ($("#hunterName").value || "Hunter").trim().slice(0,18) || "Hunter";
-    state = defaultState(name); save(); showApp();
+    const sel = document.querySelector("#expChoices .choice.selected");
+    state = defaultState(name, sel ? sel.dataset.exp : DEFAULT_EXPERIENCE);
+    const w = parseFloat($("#onboardWeight").value);   // onboarding asks in kg (the default unit)
+    if(!isNaN(w) && w >= 20 && w <= 400){
+      state.body.push({ date: todayStr(), weight: Math.round(w*100)/100, bodyfat:null, waist:null, note:null });
+    }
+    save(); showApp();
     queueNotif("level","[ SYSTEM ]","You have become a Player. Begin your daily quest.",4200);
   });
   $("#hunterName").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#startBtn").click(); });
+  $("#expChoices").addEventListener("click",e=>{
+    const b = e.target.closest(".choice"); if(!b) return;
+    $$("#expChoices .choice").forEach(c=>c.classList.remove("selected"));
+    b.classList.add("selected");
+  });
 
   // up-front auth screen
   $("#authSignInBtn").addEventListener("click", authSignIn);
@@ -115,6 +126,12 @@ function init(){
   $("#saveNameBtn").addEventListener("click", renameHunter);
   $("#exportBtn").addEventListener("click", exportData);
   $("#importFile").addEventListener("change", e=>{ if(e.target.files[0]) importData(e.target.files[0]); e.target.value = ""; });
+  $("#expGroup").addEventListener("click",e=>{
+    const b = e.target.closest("[data-exp]"); if(!b) return;
+    state.experience = b.dataset.exp;
+    save(); renderExperience(); render();
+    queueNotif("ok","[ LEVEL SET ]",`Quest targets now tuned for ${EXPERIENCE[state.experience].label}.`,2600);
+  });
   $("#unitsGroup").addEventListener("click",e=>{
     const w = e.target.closest("[data-uw]"), d = e.target.closest("[data-ud]");
     if(w){ state.units.weight = w.dataset.uw; save(); renderUnits(); render(); }

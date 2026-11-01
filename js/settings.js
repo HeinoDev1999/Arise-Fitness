@@ -2,8 +2,27 @@
    settings.js — Settings tab: rename, data backup (export/import), reset
    ===================================================================== */
 
+/* Experience level: scales quest targets. Weight comes from your latest Body entry. */
+function renderExperience(){
+  const g = $("#expGroup"); if(!g) return;
+  const bw = currentBodyweight();
+  const wNote = bw
+    ? `Tuned using your latest weight: <b>${round1(kgToDisp(bw))} ${wUnit()}</b>.`
+    : `Log your weight in the <b>Body</b> tab to tune bodyweight exercises to you.`;
+  g.innerHTML = `
+    <div class="setup-label">EXPERIENCE LEVEL</div>
+    <div class="exp-choices" id="expSettings">
+      ${Object.keys(EXPERIENCE).map(k => `
+        <button class="choice${state.experience===k?" selected":""}" data-exp="${k}" type="button">
+          ${EXPERIENCE[k].label}<span class="choice-sub">${EXPERIENCE[k].desc}</span>
+        </button>`).join("")}
+    </div>
+    <p class="sys-caption">Scales every rep, duration and distance — and how many hard exercises you get. ${wNote} Applies to quests you generate from now on.</p>`;
+}
+
 function openSettings(){
   if($("#setName")) $("#setName").value = state.name || "";
+  renderExperience();
   if(typeof renderUnits === "function") renderUnits();
   if(typeof renderSyncUI === "function") renderSyncUI();
   switchTab("settings");

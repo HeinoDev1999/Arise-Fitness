@@ -6,9 +6,10 @@
 
 let state = null;
 
-function defaultState(name){
+function defaultState(name, experience){
   return {
     name, level:1, xp:0, totalXp:0,
+    experience: EXPERIENCE[experience] ? experience : DEFAULT_EXPERIENCE, // scales quest targets (see quests.js)
     streak:0, bestStreak:0, totalQuests:0,
     lastCompletedDate:null,
     lastOnPlanDate:null,  // last day you completed a quest OR took a rest day (keeps streak alive)
@@ -41,6 +42,7 @@ function migrate(s){
   if(!Array.isArray(s.customTests)) s.customTests = [];
   if(!Array.isArray(s.statHistory)) s.statHistory = [];
   if(!s.units || typeof s.units !== "object") s.units = { weight:"kg", distance:"km" };
+  if(!EXPERIENCE[s.experience]) s.experience = DEFAULT_EXPERIENCE;
   if(!Array.isArray(s.benchActive)){
     // start from defaults, then keep any catalog tests they've already logged
     s.benchActive = DEFAULT_BENCH.slice();
