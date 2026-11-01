@@ -126,6 +126,16 @@ function init(){
   $("#saveNameBtn").addEventListener("click", renameHunter);
   $("#exportBtn").addEventListener("click", exportData);
   $("#importFile").addEventListener("change", e=>{ if(e.target.files[0]) importData(e.target.files[0]); e.target.value = ""; });
+  $("#gearGroup").addEventListener("click",e=>{
+    const chip = e.target.closest("[data-gear]");
+    if(chip){
+      const k = chip.dataset.gear, i = state.gymGear.indexOf(k);
+      if(i >= 0) state.gymGear.splice(i,1); else state.gymGear.push(k);
+    } else if(e.target.closest("[data-gearall]")){ state.gymGear = Object.keys(EQUIPMENT); }
+    else if(e.target.closest("[data-gearnone]")){ state.gymGear = []; }
+    else return;
+    save(); renderGear();
+  });
   $("#feelRow").addEventListener("click",e=>{ const b = e.target.closest("[data-feel]"); if(b) setFeel(b.dataset.feel); });
   $("#expGroup").addEventListener("click",e=>{
     if(e.target.id === "resetAdaptBtn"){ state.adapt = 1; save(); renderExperience(); render(); return; }

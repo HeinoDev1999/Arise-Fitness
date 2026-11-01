@@ -10,6 +10,7 @@ function defaultState(name, experience){
   return {
     name, level:1, xp:0, totalXp:0,
     experience: EXPERIENCE[experience] ? experience : DEFAULT_EXPERIENCE, // scales quest targets (see quests.js)
+    gymGear: Object.keys(EQUIPMENT), // equipment your gym has (gym quests only use these)
     adapt: 1,             // personal multiplier learned from "how did that feel?" ratings (0.7–1.4)
     streak:0, bestStreak:0, totalQuests:0,
     lastCompletedDate:null,
@@ -44,6 +45,7 @@ function migrate(s){
   if(!Array.isArray(s.statHistory)) s.statHistory = [];
   if(!s.units || typeof s.units !== "object") s.units = { weight:"kg", distance:"km" };
   if(!EXPERIENCE[s.experience]) s.experience = DEFAULT_EXPERIENCE;
+  if(!Array.isArray(s.gymGear)) s.gymGear = Object.keys(EQUIPMENT);
   if(typeof s.adapt !== "number" || !isFinite(s.adapt)) s.adapt = 1;
   if(!Array.isArray(s.benchActive)){
     // start from defaults, then keep any catalog tests they've already logged

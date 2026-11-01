@@ -40,6 +40,13 @@ function makeTask(ex, m, xpScale){
   };
 }
 
+/* ---------- Equipment: at the gym, only exercises whose gear you ticked ---------- */
+function hasGear(ex, location){
+  if(location !== "gym" || !ex.gear) return true;
+  const have = new Set(state.gymGear || Object.keys(EQUIPMENT));
+  return ex.gear.every(req => req.split("|").some(k => have.has(k)));
+}
+
 /* ---------- Quest generation ---------- */
 function buildTarget(ex, mult){
   if(ex.unit === "flag") return "✓ today";
@@ -58,7 +65,7 @@ function gateMultiplier(){
 function generateQuest(location, mode, focus, kind="daily", muscles=null){
   const m = MODES[mode];
   const f = FOCUS[focus];
-  let pool = EXERCISES.filter(e => e.loc.includes(location) && f.stats.includes(e.stat));
+  let pool = EXERCISES.filter(e => e.loc.includes(location) && f.stats.includes(e.stat) && hasGear(e, location));
 
   // Strength can target specific muscles picked on the body map (empty = all)
   if(focus === "strength" && Array.isArray(muscles) && muscles.length){
@@ -202,7 +209,7 @@ function swapTask(i){
   const m = MODES[q.mode];
   const inQuest = new Set(q.tasks.map(x => x.id));
   // candidates: same stat, valid for this location, not already in the quest
-  let pool = EXERCISES.filter(e => e.stat === t.stat && e.loc.includes(q.location) && !inQuest.has(e.id));
+  let pool = EXERCISES.filter(e => e.stat === t.stat && e.loc.includes(q.location) && !inQuest.has(e.id) && hasGear(e, q.location));
   // for strength, prefer an exercise within the quest's targeted muscles
   // (fall back to the swapped exercise's own muscles when no muscles were picked)
   if(q.focus === "strength"){
