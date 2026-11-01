@@ -27,6 +27,11 @@ there — nothing to configure, no offline mode, no merging.
   test list incl. bodyweight-relative gym lifts; INT is a discipline score
 - Clickable **front/back body map** to target muscles for strength days
 - **Body-metrics** tracking (weight / body-fat / waist) with a trend sparkline
+- **Experience levels** (Beginner / Intermediate / Advanced) plus a gentle **bodyweight adjustment** scale every target to the person
+- **"How did that feel?"** rating after each daily quest adapts your future targets
+- **Gym equipment checklist** — gym quests only use exercises your gym can support
+- **Rest timer** between sets (auto-starts after each exercise)
+- **Partner view** — link two accounts by invite code to see each other's level and streak (summary only, enforced by Row-Level Security)
 - Code organized into focused modules under `js/`
 
 ## How to use it
@@ -116,5 +121,7 @@ localStorage holds a technical local copy only — your account is the source of
   - `ui.js` — all rendering (status, quest, guide, history, tabs)
   - `settings.js` — rename, units, data export/import, reset
   - `supabase-config.js` — Supabase project URL + public anon key
+  - `timer.js` — rest timer
+  - `partner.js` — partner linking + partner card
   - `sync.js` — account/auth + cloud load & save
   - `main.js` — init & event wiring

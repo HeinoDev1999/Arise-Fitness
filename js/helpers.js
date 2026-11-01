@@ -12,6 +12,8 @@ function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
 function cap(s){ return s ? s[0].toUpperCase()+s.slice(1) : s; }
 function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
 function round1(n){ return Math.round(n*10)/10; }
+// escape text before putting it into innerHTML (names, emails and notes come from users)
+function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
 function round3(n){ return Math.round(n*1000)/1000; }
 
 /* ---------- Units (values stored canonical: kg, km; converted for display) ---------- */
@@ -38,7 +40,7 @@ function showNextNotif(){
   const { type, tag, msg, dur } = notifQueue.shift();
   const el = document.createElement("div");
   el.className = `notif ${type}`;
-  el.innerHTML = `<div class="notif-tag">${tag}</div><div class="notif-msg">${msg}</div>`;
+  el.innerHTML = `<div class="notif-tag">${esc(tag)}</div><div class="notif-msg">${esc(msg)}</div>`;   // text only: names/messages can come from other users
   $("#notifications").appendChild(el);
   setTimeout(()=>{ el.classList.add("out"); setTimeout(()=>{ el.remove(); showNextNotif(); }, 400); }, dur);
 }

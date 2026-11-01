@@ -126,6 +126,11 @@ function init(){
   $("#saveNameBtn").addEventListener("click", renameHunter);
   $("#exportBtn").addEventListener("click", exportData);
   $("#importFile").addEventListener("change", e=>{ if(e.target.files[0]) importData(e.target.files[0]); e.target.value = ""; });
+  $("#partnerGroup").addEventListener("click",e=>{
+    if(e.target.id === "partnerLinkBtn") linkPartner();
+    const un = e.target.closest("[data-unlink]"); if(un) unlinkPartner(un.dataset.unlink);
+  });
+  $("#partnerCard").addEventListener("click",e=>{ if(e.target.id === "partnerRefreshBtn") loadPartners(); });
   $("#gearGroup").addEventListener("click",e=>{
     const chip = e.target.closest("[data-gear]");
     if(chip){

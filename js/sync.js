@@ -42,6 +42,8 @@ async function afterAuth(){
   pushEnabled = true;
   if(route === "onboard") showOnboarding();
   else showApp();
+  if(route !== "onboard") await pushProfile();   // keep your partner-visible summary fresh
+  loadPartners();
 }
 
 /* Your account's row IS your data — load it, or start fresh if none exists yet. */
@@ -70,6 +72,7 @@ async function pushNow(){
   if(!supaClient || !syncUser) return;
   try { await supaClient.from("saves").upsert({ user_id: syncUser.id, data: state }, { onConflict:"user_id" }); }
   catch(e){ /* transient network issue — the next change retries */ }
+  pushProfile();
 }
 
 /* ---------- Auth actions (up-front login screen) ---------- */
@@ -101,6 +104,7 @@ async function syncSignOut(){
   pushEnabled = false;
   try { await supaClient.auth.signOut(); } catch(e){}
   syncUser = null;
+  partners = []; myInviteCode = null; renderPartnerCard();
   state = null;
   localStorage.removeItem(SAVE_KEY);
   showAuthScreen();
@@ -111,6 +115,6 @@ async function syncSignOut(){
 function renderSyncUI(){
   const g = $("#syncGroup"); if(!g || !syncUser) return;
   g.innerHTML = `<div class="setup-label">ACCOUNT</div>
-    <p class="sys-caption">Signed in as <b>${syncUser.email}</b>.</p>
+    <p class="sys-caption">Signed in as <b>${esc(syncUser.email)}</b>.</p>
     <button id="signOutBtn" class="mini-chip" type="button">Sign out</button>`;
 }

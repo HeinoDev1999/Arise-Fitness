@@ -187,6 +187,9 @@
           <div class="chip"><div class="chip-num" id="totalXp">0</div><div class="chip-lbl">TOTAL EXP</div></div>
         </div>
       </div>
+
+      <!-- Partner (rendered by partner.js; hidden until linked) -->
+      <div class="panel partner-card hidden" id="partnerCard"></div>
     </section>
 
     <!-- ===== QUEST TAB ===== -->
@@ -433,6 +436,8 @@
 
         <div class="setup-group" id="syncGroup"><!-- account status (rendered by sync.js) --></div>
 
+        <div class="setup-group" id="partnerGroup"><!-- partner linking (rendered by partner.js) --></div>
+
         <div class="setup-group" id="gearGroup"><!-- gym equipment (rendered by settings.js) --></div>
 
         <div class="setup-group" id="expGroup"><!-- experience level (rendered by settings.js) --></div>
@@ -468,6 +473,7 @@
   <script src="js/ui.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/timer.js"></script>
+  <script src="js/partner.js"></script>
   <script src="js/sync.js"></script>
   <script src="js/main.js"></script>
 </body>

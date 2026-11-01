@@ -41,6 +41,8 @@ function renderGear(){
 
 function openSettings(){
   if($("#setName")) $("#setName").value = state.name || "";
+  renderPartnerSettings();
+  if(typeof loadPartners === "function") loadPartners();
   renderGear();
   renderExperience();
   if(typeof renderUnits === "function") renderUnits();

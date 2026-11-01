@@ -213,6 +213,16 @@ body{
 .choice .choice-sub{font-size:11px;color:var(--text-dim)}
 .choice:hover{border-color:var(--accent)}
 .choice.selected{border-color:var(--accent);background:rgba(56,189,248,.15);box-shadow:0 0 14px var(--glow);color:#fff}
+.partner-row{display:flex;align-items:center;gap:12px;padding:8px 0}
+.partner-row + .partner-row{border-top:1px dashed rgba(125,147,179,.2)}
+.rank-badge.small{width:38px;height:38px;font-size:16px;flex-shrink:0}
+.partner-main{flex:1;min-width:0}
+.partner-name{font-family:'Orbitron';font-weight:700;font-size:15px;color:#fff}
+.partner-title{font-family:'Rajdhani';font-weight:600;font-size:13px;color:var(--accent);margin-left:6px}
+.partner-sub{font-size:13px;color:var(--text-dim)}
+.partner-streak{font-family:'Orbitron';font-weight:700;font-size:18px;color:var(--gold)}
+.invite-code{font-family:'Orbitron';letter-spacing:2px;color:var(--accent-bright)}
+.partner-linked{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:14px}
 .rest-bar{margin:12px 0;padding:10px 12px;border:1px solid var(--panel-border);border-radius:6px;background:rgba(0,0,0,.25)}
 .rest-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
 .rest-label{font-family:'Orbitron';font-size:11px;letter-spacing:2px;color:var(--text-dim)}
