@@ -2,12 +2,12 @@
    Precaches the app shell for offline use. Same-origin requests are
    network-first (fresh when online, cached when offline); cross-origin
    assets (fonts) are cache-first. Bump CACHE to force an update. */
-const CACHE = "the-system-v10";
+const CACHE = "the-system-v11";
 const ASSETS = [
   "./", "./index.html", "./styles.css", "./manifest.webmanifest", "./icon.svg",
   "./js/config.js", "./js/helpers.js", "./js/state.js", "./js/stats.js",
   "./js/quests.js", "./js/body.js", "./js/ui.js", "./js/settings.js",
-  "./js/timer.js", "./js/sync.js", "./js/supabase-config.js", "./js/main.js",
+  "./js/timer.js", "./js/partner.js", "./js/sync.js", "./js/supabase-config.js", "./js/main.js",
 ];
 
 self.addEventListener("install", e=>{

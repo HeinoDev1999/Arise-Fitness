@@ -58,7 +58,7 @@ function renderBody(){
     const extra = [
       e.bodyfat!=null ? `${e.bodyfat}% bf` : null,
       e.waist!=null ? `${e.waist} cm waist` : null,
-      e.note ? e.note : null,
+      e.note ? esc(e.note) : null,
     ].filter(Boolean).join(" · ");
     li.innerHTML = `
       <div class="bi-left">

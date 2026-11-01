@@ -100,7 +100,7 @@ function renderBenchForm(){
       const label = document.createElement("label");
       label.className = "bench-field";
       label.innerHTML = `
-        <span class="bf-top">${def.label}
+        <span class="bf-top">${esc(def.label)}
           <button class="bf-del" data-del="${def.id}" title="Remove from list" type="button">✕</button>
         </span>
         <span class="bf-sub">${dispUnit} · ${def.stat}${extra}</span>
