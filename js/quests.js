@@ -12,9 +12,11 @@ function weightFactor(){
   if(!bw) return 1;
   return clamp(Math.sqrt(REF_WEIGHT_KG / bw), 0.75, 1.1);
 }
-// Target multiplier for one exercise: experience, plus bodyweight for bodyweight moves.
+// What your "how did that feel?" ratings have learned (1 = no change)
+function adaptFactor(){ return clamp(typeof state.adapt === "number" ? state.adapt : 1, 0.7, 1.4); }
+// Target multiplier for one exercise: experience × learned feedback, plus bodyweight for bodyweight moves.
 function personalMult(ex){
-  return expCfg().mult * (BW_LOADED.has(ex.id) ? weightFactor() : 1);
+  return expCfg().mult * adaptFactor() * (BW_LOADED.has(ex.id) ? weightFactor() : 1);
 }
 // Beginners skip the hardest moves when an easier option exists.
 function levelFilter(pool, need){
@@ -91,6 +93,7 @@ function generateQuest(location, mode, focus, kind="daily", muscles=null){
     date: todayStr(), location, mode, focus,
     muscles: focus === "strength" && Array.isArray(muscles) ? muscles.slice() : [],
     kind, statScale: kind === "gate" ? 0.5 : 1,
+    feel: null,   // "hard" | "ok" | "easy" once you rate a finished daily quest
     tasks, completed:false,
   };
 }
@@ -217,6 +220,21 @@ function swapTask(i){
   q.tasks[i] = makeTask(ex, m, xpScale);
   save(); render();
   queueNotif("ok","[ EXERCISE SWAPPED ]",`${oldName} → ${ex.name}`,2600);
+}
+
+/* ---------- "How did that feel?" — nudges future targets (±8% per rating) ---------- */
+function setFeel(v){
+  const q = state.today;
+  if(!q || !q.completed || q.kind !== "daily" || q.feel) return;
+  if(v !== "hard" && v !== "ok" && v !== "easy") return;
+  q.feel = v;
+  if(v === "hard") state.adapt = clamp(round3((state.adapt || 1) * 0.92), 0.7, 1.4);
+  if(v === "easy") state.adapt = clamp(round3((state.adapt || 1) * 1.08), 0.7, 1.4);
+  const h = state.history.find(x => x.kind === "daily" && x.date === q.date);
+  if(h) h.feel = v;
+  save(); render();
+  const msg = v === "ok" ? "Targets stay as they are." : v === "hard" ? "Next quests will be a bit lighter." : "Next quests will be a bit tougher.";
+  queueNotif("ok","[ NOTED ]", msg, 2800);
 }
 
 /* ---------- Task actions ---------- */

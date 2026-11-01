@@ -126,7 +126,9 @@ function init(){
   $("#saveNameBtn").addEventListener("click", renameHunter);
   $("#exportBtn").addEventListener("click", exportData);
   $("#importFile").addEventListener("change", e=>{ if(e.target.files[0]) importData(e.target.files[0]); e.target.value = ""; });
+  $("#feelRow").addEventListener("click",e=>{ const b = e.target.closest("[data-feel]"); if(b) setFeel(b.dataset.feel); });
   $("#expGroup").addEventListener("click",e=>{
+    if(e.target.id === "resetAdaptBtn"){ state.adapt = 1; save(); renderExperience(); render(); return; }
     const b = e.target.closest("[data-exp]"); if(!b) return;
     state.experience = b.dataset.exp;
     save(); renderExperience(); render();

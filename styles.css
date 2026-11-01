@@ -213,6 +213,12 @@ body{
 .choice .choice-sub{font-size:11px;color:var(--text-dim)}
 .choice:hover{border-color:var(--accent)}
 .choice.selected{border-color:var(--accent);background:rgba(56,189,248,.15);box-shadow:0 0 14px var(--glow);color:#fff}
+.feel-row{margin:12px 0;padding:12px;border:1px solid var(--panel-border);border-radius:6px;background:rgba(0,0,0,.25)}
+.feel-q{display:block;font-size:14px;margin-bottom:8px}
+.feel-q em{color:var(--text-dim);font-size:12px}
+.feel-btns{display:flex;gap:8px;flex-wrap:wrap}
+.feel-btn{flex:1 1 30%;padding:10px 6px;background:rgba(56,189,248,.08);border:1px solid var(--panel-border);border-radius:5px;color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;transition:.15s}
+.feel-btn:hover{border-color:var(--accent);box-shadow:0 0 10px var(--glow)}
 .exp-choices{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
 .exp-choices .choice{flex:1 1 30%;min-width:96px;text-align:center}
 .onboard-label{text-align:left;margin-top:14px}

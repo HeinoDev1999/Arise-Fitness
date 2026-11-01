@@ -157,7 +157,9 @@ function prefillSetup(){
   renderBodyMap();
   const bw = currentBodyweight();
   $("#tuneNote").textContent = `Targets tuned for: ${expCfg().label}` +
-    (bw ? ` · ${round1(kgToDisp(bw))} ${wUnit()}` : " · log your weight in Body to tune further") + ` (change in Settings)`;
+    (bw ? ` · ${round1(kgToDisp(bw))} ${wUnit()}` : " · log your weight in Body to tune further") +
+    (Math.abs(adaptFactor() - 1) >= 0.01 ? ` · ${adaptFactor() > 1 ? "+" : ""}${Math.round((adaptFactor() - 1) * 100)}% from your feedback` : "") +
+    ` (change in Settings)`;
   refreshGenerateBtn();
 }
 
@@ -305,7 +307,9 @@ function renderQuest(){
       : `Daily quest cleared! 🔥 Want more? Enter a Gate for bonus EXP (reduced rewards).`;
     $("#resetQuestBtn").classList.add("hidden");
     $("#enterGateBtn").classList.remove("hidden");
+    $("#feelRow").classList.toggle("hidden", isGate || !!q.feel);   // rate a daily quest once
   } else {
+    $("#feelRow").classList.add("hidden");
     cleared.classList.add("hidden");
     $("#resetQuestBtn").classList.remove("hidden");
     $("#enterGateBtn").classList.add("hidden");

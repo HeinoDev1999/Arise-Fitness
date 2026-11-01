@@ -2,7 +2,7 @@
    Precaches the app shell for offline use. Same-origin requests are
    network-first (fresh when online, cached when offline); cross-origin
    assets (fonts) are cache-first. Bump CACHE to force an update. */
-const CACHE = "the-system-v7";
+const CACHE = "the-system-v8";
 const ASSETS = [
   "./", "./index.html", "./styles.css", "./manifest.webmanifest", "./icon.svg",
   "./js/config.js", "./js/helpers.js", "./js/state.js", "./js/stats.js",
