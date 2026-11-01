@@ -328,6 +328,18 @@
           <div class="bar"><div class="bar-fill quest" id="questProgressBar"></div></div>
         </div>
 
+        <div class="rest-bar" id="restBar">
+          <div class="rest-top"><span class="rest-label">⏱ REST TIMER</span><span class="rest-time" id="restTime">1:00</span></div>
+          <div class="rest-controls">
+            <button class="mini-chip" data-rest="30" type="button">30s</button>
+            <button class="mini-chip" data-rest="60" type="button">60s</button>
+            <button class="mini-chip" data-rest="90" type="button">90s</button>
+            <button class="mini-chip" data-rest="120" type="button">2 min</button>
+            <button class="mini-chip" id="restAutoBtn" type="button">Auto: on</button>
+            <button class="mini-chip hidden" id="restSkipBtn" type="button">Skip</button>
+          </div>
+        </div>
+
         <ul class="task-list" id="taskList"></ul>
 
         <div class="success-box hidden" id="questCleared">
@@ -455,6 +467,7 @@
   <script src="js/supabase-config.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/settings.js"></script>
+  <script src="js/timer.js"></script>
   <script src="js/sync.js"></script>
   <script src="js/main.js"></script>
 </body>

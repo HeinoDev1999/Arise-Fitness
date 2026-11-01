@@ -251,6 +251,7 @@ function toggleTask(i){
   const t = q.tasks[i];
   t.done = !t.done;
   if(t.done){
+    if(typeof autoRest === "function" && !q.tasks.every(x => x.done)) autoRest(t);   // start a rest between exercises
     if(t.xp > 0){ addXp(t.xp); queueNotif("ok","[ TASK CLEARED ]",`${t.name} — +${t.xp} EXP`,1800); }
     else { queueNotif(isPenalty?"danger":"ok","[ TASK CLEARED ]",`${t.name} — cleared`,1600); }
   } else if(t.xp > 0){

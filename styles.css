@@ -213,6 +213,12 @@ body{
 .choice .choice-sub{font-size:11px;color:var(--text-dim)}
 .choice:hover{border-color:var(--accent)}
 .choice.selected{border-color:var(--accent);background:rgba(56,189,248,.15);box-shadow:0 0 14px var(--glow);color:#fff}
+.rest-bar{margin:12px 0;padding:10px 12px;border:1px solid var(--panel-border);border-radius:6px;background:rgba(0,0,0,.25)}
+.rest-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.rest-label{font-family:'Orbitron';font-size:11px;letter-spacing:2px;color:var(--text-dim)}
+.rest-time{font-family:'Orbitron';font-weight:900;font-size:26px;color:var(--accent-bright);text-shadow:0 0 12px var(--glow)}
+.rest-controls{display:flex;flex-wrap:wrap;gap:6px}
+.rest-controls .mini-chip.on{border-color:var(--accent);color:var(--accent-bright);background:rgba(56,189,248,.14)}
 .gear-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .gear-chip{padding:8px 12px;border:1px solid var(--panel-border);border-radius:16px;background:rgba(0,0,0,.3);color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:14px;transition:.15s;text-align:left}
 .gear-chip.on{border-color:var(--accent);color:var(--accent-bright);background:rgba(56,189,248,.14)}

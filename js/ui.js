@@ -67,6 +67,7 @@ function render(){
   renderGuide();
 
   renderQuest();
+  if(typeof renderRestBar === "function") renderRestBar();
   renderBody();
   renderCalendar();
   renderHistory();
