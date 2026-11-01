@@ -2,10 +2,46 @@
    quests.js — quest generation, penalties, progression & task actions
    ===================================================================== */
 
+/* ---------- Personal scaling: experience level × bodyweight ---------- */
+function expCfg(){ return EXPERIENCE[state.experience] || EXPERIENCE[DEFAULT_EXPERIENCE]; }
+
+// Gentle, capped bodyweight adjustment for bodyweight-loaded moves: lighter than
+// the reference weight -> a bit more reps, heavier -> a bit fewer (never extreme).
+function weightFactor(){
+  const bw = currentBodyweight();   // latest Body-tab weight, canonical kg
+  if(!bw) return 1;
+  return clamp(Math.sqrt(REF_WEIGHT_KG / bw), 0.75, 1.1);
+}
+// Target multiplier for one exercise: experience, plus bodyweight for bodyweight moves.
+function personalMult(ex){
+  return expCfg().mult * (BW_LOADED.has(ex.id) ? weightFactor() : 1);
+}
+// Beginners skip the hardest moves when an easier option exists.
+function levelFilter(pool, need){
+  if(state.experience !== "beginner") return pool;
+  const easier = pool.filter(e => !BEGINNER_SKIP.has(e.id));
+  return easier.length >= Math.min(need, pool.length) ? easier : pool;
+}
+// Shuffled; for beginners the easier exercises come first, so hard ones are only filler.
+function levelOrder(pool){
+  const sh = shuffle(pool);
+  if(state.experience !== "beginner") return sh;
+  return [...sh.filter(e => !BEGINNER_SKIP.has(e.id)), ...sh.filter(e => BEGINNER_SKIP.has(e.id))];
+}
+// One quest task from an exercise (EXP follows the time mode only, never the level).
+function makeTask(ex, m, xpScale){
+  return {
+    id: ex.id, name: ex.name, stat: ex.stat,
+    target: buildTarget(ex, m.mult * personalMult(ex)),
+    xp: Math.max(1, Math.round(ex.xp * (ex.stat === "INT" ? 1 : m.mult) * xpScale)),
+    done: false,
+  };
+}
+
 /* ---------- Quest generation ---------- */
 function buildTarget(ex, mult){
   if(ex.unit === "flag") return "✓ today";
-  if(ex.unit === "sets") return `${ex.base} × ${ex.reps}`;
+  if(ex.unit === "sets") return `${clamp(Math.round(ex.base * expCfg().sets), 2, 4)} × ${ex.reps}`;
   if(ex.unit === "km"){ return `${round1(kmToDisp(Math.max(0.1, ex.base * mult)))} ${dUnit()}`; }
   const v = Math.max(1, Math.round(ex.base * mult));
   const unitText = { reps:"reps", sec:"sec", min:"min", x:"rounds" }[ex.unit] || ex.unit;
@@ -27,20 +63,19 @@ function generateQuest(location, mode, focus, kind="daily", muscles=null){
     const filtered = pool.filter(e => e.muscles && e.muscles.some(mm => muscles.includes(mm)));
     if(filtered.length) pool = filtered; // fall back to all strength if selection has nothing here
   }
-
   let chosen = [];
   if(f.spread){
     // Full Body: guarantee a spread across the focus stats, then fill
-    const byStat = {}; f.stats.forEach(s => byStat[s] = pool.filter(e => e.stat === s));
+    const byStat = {}; f.stats.forEach(s => byStat[s] = levelFilter(pool.filter(e => e.stat === s), 1));
     for(const s of f.stats){
       if(chosen.length >= m.count) break;
       if(byStat[s].length) chosen.push(rand(byStat[s]));
     }
-    const rest = shuffle(pool.filter(e => !chosen.includes(e)));
+    const rest = levelOrder(pool.filter(e => !chosen.includes(e))).reverse(); // pop() takes the easiest first
     while(chosen.length < m.count && rest.length) chosen.push(rest.pop());
   } else {
-    // Focused: just draw from the single pool (no repeats; shorter if pool is small)
-    chosen = shuffle(pool).slice(0, m.count);
+    // Focused: draw from the single pool (no repeats; shorter if pool is small)
+    chosen = levelOrder(pool).slice(0, m.count);
   }
 
   // INT discipline habits (Full Body only)
@@ -50,12 +85,7 @@ function generateQuest(location, mode, focus, kind="daily", muscles=null){
   }
 
   const xpScale = kind === "gate" ? gateMultiplier() : 1;
-  const tasks = chosen.map(ex => ({
-    id: ex.id, name: ex.name, stat: ex.stat,
-    target: buildTarget(ex, m.mult),
-    xp: Math.max(1, Math.round(ex.xp * (ex.stat === "INT" ? 1 : m.mult) * xpScale)),
-    done: false,
-  }));
+  const tasks = chosen.map(ex => makeTask(ex, m, xpScale));
 
   return {
     date: todayStr(), location, mode, focus,
@@ -78,10 +108,15 @@ function generatePenaltyQuest(){
     { id:"burpees", name:"Burpees",           stat:"AGI", n:20 + bump,     unit:"reps" },
     { id:"plank",   name:"Plank Hold",        stat:"VIT", n:75 + bump * 2, unit:"sec"  },
   ];
-  const tasks = defs.map(d => ({
-    id:d.id, name:d.name, stat:d.stat,
-    target:`${d.n} ${d.unit}`, xp:0, done:false,
-  }));
+  // Beginners get an easier redemption move in place of burpees
+  if(state.experience === "beginner"){
+    defs[3] = { id:"mtclimb", name:"Mountain Climbers", stat:"AGI", n:30 + bump, unit:"reps" };
+  }
+  // scaled to the person (experience + bodyweight), never below a token minimum
+  const tasks = defs.map(d => {
+    const n = Math.max(5, Math.round(d.n * personalMult(EX_BY_ID[d.id])));
+    return { id:d.id, name:d.name, stat:d.stat, target:`${n} ${d.unit}`, xp:0, done:false };
+  });
   return { date: todayStr(), kind:"penalty", tasks, completed:false };
 }
 function completePenalty(){
@@ -173,17 +208,13 @@ function swapTask(i){
     const sameMuscle = pool.filter(e => e.muscles && e.muscles.some(mm => target.includes(mm)));
     if(sameMuscle.length) pool = sameMuscle;
   }
+  pool = levelFilter(pool, 1);
   if(!pool.length){ queueNotif("danger","[ SYSTEM ]","No alternative for this slot here, Hunter.",2800); return; }
 
   const ex = rand(pool);
   const xpScale = q.kind === "gate" ? gateMultiplier() : 1;
   const oldName = t.name;
-  q.tasks[i] = {
-    id: ex.id, name: ex.name, stat: ex.stat,
-    target: buildTarget(ex, m.mult),
-    xp: Math.max(1, Math.round(ex.xp * (ex.stat === "INT" ? 1 : m.mult) * xpScale)),
-    done: false,
-  };
+  q.tasks[i] = makeTask(ex, m, xpScale);
   save(); render();
   queueNotif("ok","[ EXERCISE SWAPPED ]",`${oldName} → ${ex.name}`,2600);
 }

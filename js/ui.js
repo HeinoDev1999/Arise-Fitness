@@ -155,6 +155,9 @@ function prefillSetup(){
   markChoice("modeChoices","mode",pendingMode);
   updateMuscleVisibility();
   renderBodyMap();
+  const bw = currentBodyweight();
+  $("#tuneNote").textContent = `Targets tuned for: ${expCfg().label}` +
+    (bw ? ` · ${round1(kgToDisp(bw))} ${wUnit()}` : " · log your weight in Body to tune further") + ` (change in Settings)`;
   refreshGenerateBtn();
 }
 

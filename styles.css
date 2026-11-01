@@ -213,6 +213,9 @@ body{
 .choice .choice-sub{font-size:11px;color:var(--text-dim)}
 .choice:hover{border-color:var(--accent)}
 .choice.selected{border-color:var(--accent);background:rgba(56,189,248,.15);box-shadow:0 0 14px var(--glow);color:#fff}
+.exp-choices{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.exp-choices .choice{flex:1 1 30%;min-width:96px;text-align:center}
+.onboard-label{text-align:left;margin-top:14px}
 .choice-wrap{flex-wrap:wrap}
 .choice-wrap .choice{flex:1 1 calc(50% - 4px);min-width:calc(50% - 4px)}
 

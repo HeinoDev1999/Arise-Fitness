@@ -299,6 +299,32 @@ const EXERCISES = [
 ];
 const EX_BY_ID = Object.fromEntries(EXERCISES.map(e => [e.id, e]));
 
+/* ---------- Experience levels ----------
+   mult:  scales every rep / duration / distance target
+   sets:  scales gym set counts (clamped to 2–4)
+   EXP is deliberately NOT scaled: a beginner doing their (smaller) quest
+   earns the same EXP, because EXP measures effort & consistency. ---------- */
+const EXPERIENCE = {
+  beginner:     { label:"Beginner",     desc:"New to training, or a long break", mult:0.6,  sets:0.67 },
+  intermediate: { label:"Intermediate", desc:"Train some, comfortable with basics", mult:0.85, sets:1.0 },
+  advanced:     { label:"Advanced",     desc:"Train consistently, want a challenge", mult:1.15, sets:1.33 },
+};
+const DEFAULT_EXPERIENCE = "intermediate";
+
+/* Exercises where you move your own bodyweight: heavier = harder, lighter = easier.
+   Reps for these get a gentle, capped bodyweight adjustment (see weightFactor). */
+const BW_LOADED = new Set([
+  "pushups","diamond","pike","dips","invrows","pullups","squats","lunges","bulgarian",
+  "stepups","burpees","mtclimb","jumpsq","jacks","run",
+]);
+const REF_WEIGHT_KG = 75;   // the weight the base numbers are tuned for
+
+/* Too demanding for someone just starting out — left out of Beginner quests
+   (only when enough easier options exist for that location/focus). */
+const BEGINNER_SKIP = new Set([
+  "pullups","burpees","pike","diamond","bulgarian","hollow","sprints","jumpsq","dips",
+]);
+
 /* ---------- Mode (time) config ---------- */
 const MODES = {
   quick:    { label:"Quick",    count:3, mult:0.6,  habits:1 },

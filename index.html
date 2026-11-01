@@ -49,6 +49,16 @@
       <h1 class="onboard-title">YOU HAVE BEEN<br/>CHOSEN AS A PLAYER</h1>
       <p class="onboard-sub">Enter your name, Hunter. The System will track your growth.</p>
       <input id="hunterName" class="text-input" type="text" placeholder="Hunter name..." maxlength="18" />
+
+      <div class="setup-label onboard-label">HOW EXPERIENCED ARE YOU?</div>
+      <div class="exp-choices" id="expChoices">
+        <button class="choice" data-exp="beginner" type="button">🌱 Beginner<span class="choice-sub">new, or a long break</span></button>
+        <button class="choice selected" data-exp="intermediate" type="button">⚡ Intermediate<span class="choice-sub">train some, know the basics</span></button>
+        <button class="choice" data-exp="advanced" type="button">🔥 Advanced<span class="choice-sub">train consistently</span></button>
+      </div>
+
+      <div class="setup-label onboard-label">YOUR WEIGHT (kg) — TUNES YOUR TARGETS</div>
+      <input id="onboardWeight" class="text-input" type="number" step="0.1" min="20" max="400" placeholder="e.g. 68 (optional)" />
       <button id="startBtn" class="btn btn-primary">ACCEPT</button>
       <p class="onboard-fine">By accepting, you agree to level up. Refusal results in... a penalty.</p>
     </div>
@@ -280,6 +290,7 @@
           </div>
         </div>
 
+        <p class="sys-caption" id="tuneNote"></p>
         <button id="generateBtn" class="btn btn-primary" disabled>GENERATE DAILY QUEST</button>
         <button id="restDayBtn" class="btn btn-ghost btn-small" style="width:100%;margin-top:10px">🛌 Take a Rest Day</button>
         <button id="setupCancelBtn" class="link-btn hidden" style="display:block;margin:12px auto 0">Cancel</button>
@@ -400,6 +411,8 @@
         </div>
 
         <div class="setup-group" id="syncGroup"><!-- account status (rendered by sync.js) --></div>
+
+        <div class="setup-group" id="expGroup"><!-- experience level (rendered by settings.js) --></div>
 
         <div class="setup-group" id="unitsGroup"><!-- units added with the units feature --></div>
 
